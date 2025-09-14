@@ -1,5 +1,4 @@
 # LinkRead
-# Web Dev Blog Platform
 
 A community-driven blog platform for Web Development learners.  
 Users can write blogs daily, track streaks, and get their blogs verified through a semi-automated keyword system and community voting.
