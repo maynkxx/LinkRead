@@ -1,20 +1,7 @@
 # LinkRead
 
 A community-driven blog platform for Web Development learners.  
-Users can write blogs daily, track streaks, and get their blogs verified through a semi-automated keyword system and community voting.
-
----
-
-## 🚀 Features
-- **Authentication**: Login/Signup using JWT  
-- **Homepage**: Web dev intro, roadmap, and blog creation button  
-- **Create Blog**: Add title, content, tips, applications, learnings, code snippets, and optional images  
-- **Verification System**:  
-  - Keyword-based check with MDN/React docs  
-  - Community voting for verification  
-- **User Dashboard**: Streak graph (Chart.js) + list of blogs  
-- **Browse Blogs**: View most upvoted & verified blogs  
-- **Actions**: Upvote and report blogs  
+Users can write blogs daily and track streaks.
 
 ---
 
@@ -26,4 +13,17 @@ Users can write blogs daily, track streaks, and get their blogs verified through
 - **Extras**: Chart.js for streak tracking  
 
 ---
+
+## Getting Started
+
+Follow these steps to get the project up and running on your local machine.
+
+---
+
+### 1️⃣ Fork & Clone the Repository
+- Fork this repository on GitHub to your own account.
+- Clone your fork locally:
+```bash
+git clone https://github.com/your-username/repo-name.git
+cd repo-name
 
