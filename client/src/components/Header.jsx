@@ -21,7 +21,7 @@ export default function Header() {
     return (
         <Navbar className="border-b-2 border-gray-300 dark:bg-black px-4">
         <Link to="/" className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white ">
-            <span className="px-2 py-1.5 rounded-xl" color="">Skill-Issue's BLOG</span>
+            <span className="px-2 py-1.5 rounded-xl" color="">LinkRead</span>
         </Link>
         
         {/* YouTube-style search bar */}
