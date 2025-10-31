@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
-import SignIn from './pages/SignIn'; // Corrected: import path and component name
-import SignUp from './pages/SignUp'; // Standardized
-import Project from './pages/Projects'; // Standardized (assuming file is Projects.jsx)
-import Dashboard from './pages/Dashboard'; // Standardized (assuming file is Dashboard.jsx)
+import SignIn from './pages/SignIN';
+import SignUp from './pages/SignUp'; 
+import Project from './pages/Projects'; 
+import Dashboard from './pages/Dashboard';
 import Header from './components/Header';
 
 export default function App() {
@@ -15,10 +15,10 @@ export default function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
-        <Route path='/signin' element={<SignIn />} /> {/* Corrected: component name */}
-        <Route path='/signup' element={<SignUp />} /> {/* Standardized */}
-        <Route path='/projects' element={<Project />} /> {/* Standardized */}
-        <Route path='/dashboard' element={<Dashboard />} /> {/* Standardized */}
+        <Route path='/signin' element={<SignIn />} /> 
+        <Route path='/signup' element={<SignUp />} /> 
+        <Route path='/projects' element={<Project />} /> 
+        <Route path='/dashboard' element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

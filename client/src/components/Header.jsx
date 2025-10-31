@@ -105,7 +105,7 @@ export default function Header() {
             </div>
         </div>
         
-        <Link to="/login">
+        <Link to="/signin">
             <Button className="hover:bg-black hover:text-white hover:dark:bg-white hover:dark:text-black mx-2 bg-white text-black dark:bg-black dark:text-white" pill >
                 <ul>Log In</ul>
             </Button>

@@ -1,114 +1,94 @@
-import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Label, TextInput, Button, Alert, Spinner } from "flowbite-react";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
 
-// Renamed to match the file name "SignIn.jsx"
 export default function SignIn() {
-  const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      return setErrorMessage('Please fill out all fields.');
-    }
+
+    if (!formData.email || !formData.password)
+      return setErrorMessage("Please fill all fields.");
+
     try {
       setLoading(true);
-      setErrorMessage(null);
-      
-      const res = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      setErrorMessage("");
 
-      const data = await res.json();
-      
-      if (data.success === false) {
-        setLoading(false);
-        return setErrorMessage(data.message);
-      }
-      
-      setLoading(false);
-      if(res.ok) {
-        navigate('/'); // Redirect to homepage
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
+      const res = await axiosInstance.post("/auth/signin", formData);
+      localStorage.setItem("token", res.data.token);
+      alert("Login successful!");
+      navigate("/dashboard");
+    } catch (err) {
+      setErrorMessage(err.response?.data?.message || "Sign in failed");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className='min-h-screen mt-20'>
-      <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
-        {/* Left Side */}
-        <div className='flex-1'>
-          <Link to='/' className='font-bold dark:text-white text-4xl'>
-            <span className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>
-              Link
-            </span>
-            Read
-          </Link>
-          <p className='text-sm mt-5'>
-            Welcome back! Sign in with your email and password.
-          </p>
-        </div>
-
-        {/* Right Side */}
-        <div className='flex-1'>
-          <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-            <div>
-              <Label value='Your email' />
-              <TextInput
-                type='email'
-                placeholder='name@company.com'
-                id='email'
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <Label value='Your password' />
-              <TextInput
-                type='password'
-                placeholder='**********'
-                id='password'
-                onChange={handleChange}
-              />
-            </div>
-            <Button
-              gradientDuoTone='purpleToPink'
-              type='submit'
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Spinner size='sm' />
-                  <span className='pl-3'>Loading...</span>
-                </>
-              ) : (
-                'Sign In'
-              )}
-            </Button>
-          </form>
-          <div className='flex gap-2 text-sm mt-5'>
-            <span>Don't have an account?</span>
-            <Link to='/sign-up' className='text-blue-500'>
-              Sign Up
-            </Link>
+    <div className="min-h-screen mt-20 flex items-center justify-center">
+      <div className="w-full max-w-md bg-white dark:bg-black rounded-xl shadow-lg p-6">
+        <h2 className="text-3xl font-bold mb-6 text-center dark:text-white">
+          Welcome Back
+        </h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <Label value="Email" />
+            <TextInput
+              type="email"
+              id="email"
+              placeholder="name@example.com"
+              onChange={handleChange}
+            />
           </div>
-          {errorMessage && (
-            <Alert className='mt-5' color='failure'>
-              {errorMessage}
-            </Alert>
-          )}
-        </div>
+
+          <div>
+            <Label value="Password" />
+            <TextInput
+              type="password"
+              id="password"
+              placeholder="********"
+              onChange={handleChange}
+            />
+          </div>
+
+          <Button
+            type="submit"
+            gradientDuoTone="purpleToPink"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Spinner size="sm" />
+                <span className="pl-2">Signing in...</span>
+              </>
+            ) : (
+              "Sign In"
+            )}
+          </Button>
+        </form>
+
+        {errorMessage && (
+          <Alert color="failure" className="mt-4">
+            {errorMessage}
+          </Alert>
+        )}
+
+        <p className="mt-4 text-sm text-center">
+          Don’t have an account?{" "}
+          <Link to="/signup" className="text-blue-500 hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );

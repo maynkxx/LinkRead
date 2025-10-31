@@ -1,52 +1,63 @@
-// auth.controller.js
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user.model");
+
 const signup = async (req, res) => {
-  console.log(req.body);  // logs incoming data
-  res.json({ message: 'Signup route hit', data: req.body });
-};
-
-module.exports = { signup };
-
-import User from '../models/user.model.js'; // 💡 Make sure this path is correct
-import bcryptjs from 'bcryptjs';
-import { errorHandler } from '../utils/error.js'; // 💡 Assumes you have an error handler utility
-import jwt from 'jsonwebtoken';
-
-export const signin = async (req, res, next) => {
-  const { email, password } = req.body;
-
-  if (!email || !password || email === '' || password === '') {
-    return next(errorHandler(400, 'All fields are required'));
-  }
-
   try {
-    const validUser = await User.findOne({ email });
-    if (!validUser) {
-      return next(errorHandler(404, 'User not found'));
-    }
+    const { username, email, password } = req.body;
 
-    const validPassword = bcryptjs.compareSync(password, validUser.password);
-    if (!validPassword) {
-      return next(errorHandler(400, 'Invalid password'));
-    }
+    if (!username || !email || !password)
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
 
-    // Create JWT token
-    const token = jwt.sign(
-      { id: validUser._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' } // Token expires in 1 day
-    );
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already exists" });
 
-    // Separate password from the rest of the user details
-    const { password: userPassword, ...rest } = validUser._doc;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
 
-    // Send the token in a cookie and the user info in JSON
     res
-      .status(200)
-      .cookie('access_token', token, {
-        httpOnly: true, // Cookie cannot be accessed by client-side scripts
-      })
-      .json(rest);
+      .status(201)
+      .json({ success: true, message: "User registered successfully" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const signin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid password" });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: { id: user._id, username: user.username, email: user.email },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { signup, signin };
