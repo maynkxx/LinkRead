@@ -1,15 +1,15 @@
 // backend/server.js
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import threadRoutes from "./routes/threadRoutes.js";
-import postRoutes from "./routes/postRoutes.js";
-import commentRoutes from "./routes/commentRoutes.js";
-import messageRoutes from "./routes/messageRoutes.js";
-import { errorHandler } from "./middleware/errorHandler.js";
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const threadRoutes = require("./routes/threadRoutes");
+const postRoutes = require("./routes/postRoutes");
+const commentRoutes = require("./routes/commentRoutes");
+const messageRoutes = require("./routes/messageRoutes");
+const { errorHandler } = require("./middleware/errorHandler");
 
 dotenv.config();
 connectDB();
