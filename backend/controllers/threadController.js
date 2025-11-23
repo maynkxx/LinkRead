@@ -32,3 +32,13 @@ exports.leaveThread = async (req, res) => {
     })
     res.json({ message: 'Left' })
 }
+
+exports.updateThread = async (req, res) => {
+    const updated = await Thread.findByIdAndUpdate(req.params.threadId, req.body, { new: true });
+    res.json(updated);
+}
+
+exports.deleteThread = async (req, res) => {
+    await Thread.findByIdAndDelete(req.params.threadId);
+    res.json({ message: 'Deleted thread' });
+}

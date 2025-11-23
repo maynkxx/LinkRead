@@ -5,19 +5,18 @@ const upload = require("../middleware/upload");
 const {
   createThread,
   getAllThreads,
-  getThreadById,
+  getThread,
   updateThread,
   deleteThread,
   joinThread,
-  leaveThread,
-  searchThreads
+  leaveThread
 } = require("../controllers/threadController");
 
 const router = express.Router();
 
 router.get("/", getAllThreads);
-router.get("/:threadId", getThreadById);
-router.get("/search/query", searchThreads);
+router.get("/:threadId", getThread);
+// router.get("/search/query", searchThreads);
 
 router.post(
   "/",

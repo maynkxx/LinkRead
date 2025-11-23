@@ -38,10 +38,4 @@ const uploadSingle = (field = "media") => upload.single(field);
 const uploadMultiple = (field = "media", max = MAX_FILES) => upload.array(field, max);
 const uploadFields = (fields) => upload.fields(fields);
 
-module.exports = {
-	upload,
-	uploadSingle,
-	uploadMultiple,
-	uploadFields,
-	allowedMimeTypes,
-};
+module.exports = upload;

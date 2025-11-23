@@ -31,14 +31,14 @@ const threadSchema = new mongoose.Schema(
 		name: {
 			type: String,
 			required: true,
-			unique: true,
+			
 			trim: true,
 			minlength: 3,
 			maxlength: 30,
 		},
 		slug: {
 			type: String,
-			unique: true,
+			
 			lowercase: true,
 		},
 		description: { type: String, maxlength: 600 },

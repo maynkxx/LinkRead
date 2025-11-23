@@ -1,5 +1,5 @@
 const express = require("express");
-const auth = require("../middleware/auth");
+const authenticate = require("../middleware/auth");
 const upload = require("../middleware/upload");
 
 const {
@@ -21,7 +21,7 @@ router.get("/search/query", searchUsers);
 
 router.put(
   "/update/profile",
-  auth,
+  authenticate,
   upload.fields([
     { name: "avatar", maxCount: 1 },
     { name: "banner", maxCount: 1 }
@@ -29,12 +29,12 @@ router.put(
   updateUserProfile
 );
 
-router.delete("/delete/account", auth, deleteUserAccount);
+router.delete("/delete/account", authenticate, deleteUserAccount);
 
-router.post("/follow/:userId", auth, followUser);
-router.post("/unfollow/:userId", auth, unfollowUser);
+router.post("/follow/:userId", authenticate, followUser);
+router.post("/unfollow/:userId", authenticate, unfollowUser);
 
-router.get("/saved/posts/list", auth, getSavedPosts);
+router.get("/saved/posts/list", authenticate, getSavedPosts);
 router.get("/posts/list/:userId", getUserPosts);
 router.get("/comments/list/:userId", getUserComments);
 

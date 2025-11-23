@@ -37,7 +37,7 @@ const postSchema = new mongoose.Schema(
 		},
 		slug: {
 			type: String,
-			unique: true,
+			
 			lowercase: true,
 		},
 		excerpt: { type: String, maxlength: 300 },
