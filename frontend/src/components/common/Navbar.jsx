@@ -1,90 +1,60 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa";
 
-const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
-  const navLinkClass = ({ isActive }) =>
-    `px-3 py-1 rounded-md text-sm font-medium transition 
-    ${isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800/70"}`;
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="w-full border-b border-gray-800 bg-black/80 backdrop-blur">
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14">
-        {/* Logo / Brand */}
-        <Link to="/" className="flex items-center gap-2">
-          <span className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center text-white font-bold text-lg">
-            L
-          </span>
-          <span className="text-white font-semibold text-lg tracking-tight">
-            LinkRead
-          </span>
+    <nav className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+
+        {/* Logo */}
+        <Link to="/" className="text-xl font-bold text-blue-600">
+          Threaddit
         </Link>
 
-        {/* Center nav links */}
-        <nav className="hidden md:flex items-center gap-2">
-          <NavLink to="/" className={navLinkClass}>
-            Home
-          </NavLink>
-          <NavLink to="/threads" className={navLinkClass}>
-            Threads
-          </NavLink>
-          <NavLink to="/projects" className={navLinkClass}>
-            Projects
-          </NavLink>
-          <NavLink to="/messages" className={navLinkClass}>
-            Messages
-          </NavLink>
-        </nav>
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link to="/" className="hover:text-blue-600 transition">Home</Link>
+          <Link to="/threads" className="hover:text-blue-600 transition">Threads</Link>
+          <Link to="/messages" className="hover:text-blue-600 transition">Messages</Link>
+          <Link to="/profile" className="hover:text-blue-600 transition">Profile</Link>
 
-        {/* Right side: user / auth actions */}
-        <div className="flex items-center gap-3">
-          {user ? (
-            <>
-              <Link
-                to={`/profile/${user._id || "me"}`}
-                className="hidden sm:flex items-center gap-2"
-              >
-                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm text-white">
-                  {user.username?.[0]?.toUpperCase() || "U"}
-                </div>
-                <span className="text-sm text-gray-200 max-w-[120px] truncate">
-                  {user.username}
-                </span>
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="px-3 py-1 text-sm rounded-md border border-gray-700 text-gray-200 hover:bg-gray-800"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="px-3 py-1 text-sm rounded-md text-gray-200 hover:bg-gray-800"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="px-3 py-1 text-sm rounded-md bg-purple-600 text-white hover:bg-purple-500"
-              >
-                Sign up
-              </Link>
-            </>
-          )}
+          <Link
+            to="/login"
+            className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Login
+          </Link>
         </div>
-      </div>
-    </header>
-  );
-};
 
-export default Navbar;
+        {/* Mobile Menu Icon */}
+        <button
+          className="md:hidden text-2xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
+
+      {/* Mobile Dropdown Menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200 p-4 space-y-4">
+          <Link to="/" onClick={() => setMenuOpen(false)} className="block">Home</Link>
+          <Link to="/threads" onClick={() => setMenuOpen(false)} className="block">Threads</Link>
+          <Link to="/messages" onClick={() => setMenuOpen(false)} className="block">Messages</Link>
+          <Link to="/profile" onClick={() => setMenuOpen(false)} className="block">Profile</Link>
+
+          <Link
+            to="/login"
+            onClick={() => setMenuOpen(false)}
+            className="block px-4 py-2 rounded-md bg-blue-600 text-white text-center hover:bg-blue-700"
+          >
+            Login
+          </Link>
+        </div>
+      )}
+    </nav>
+  );
+}
