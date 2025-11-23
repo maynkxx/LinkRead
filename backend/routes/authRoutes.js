@@ -1,5 +1,5 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   registerUser,
   loginUser,
   getMe,
@@ -8,33 +8,18 @@ import {
   forgotPassword,
   resetPassword,
   logoutUser
-} from "../controllers/authController.js";
-import auth from "../middleware/auth.js";
+} = require("../controllers/authController");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// Register
 router.post("/register", registerUser);
-
-// Login
 router.post("/login", loginUser);
-
-// Logout
 router.post("/logout", auth, logoutUser);
-
-// Get current logged-in user
 router.get("/me", auth, getMe);
-
-// Email verification link
 router.get("/verify/:token", verifyEmail);
-
-// Resend verification email
 router.post("/verify/resend", resendVerificationEmail);
-
-// Forgot password (send reset email)
 router.post("/forgot-password", forgotPassword);
-
-// Reset password using token
 router.post("/reset-password/:token", resetPassword);
 
-export default router;
+module.exports = router;
