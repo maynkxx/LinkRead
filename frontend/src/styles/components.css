@@ -1,0 +1,124 @@
+/* ------------------------------
+   BUTTON STYLES
+--------------------------------*/
+.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+  }
+  
+  .btn-primary {
+    background-color: #2563eb;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .btn-outline {
+    border: 1px solid #9ca3af;
+    color: #374151;
+  }
+  
+  .btn-outline:hover {
+    background-color: #f3f4f6;
+  }
+  
+  /* ------------------------------
+     INPUT FIELDS
+  --------------------------------*/
+  .input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: white;
+    font-size: 0.95rem;
+    transition: 0.2s;
+  }
+  
+  .input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  }
+  
+  /* ------------------------------
+     FORM LABEL
+  --------------------------------*/
+  .label {
+    margin-bottom: 0.2rem;
+    display: block;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  /* ------------------------------
+     CARD COMPONENT
+  --------------------------------*/
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.4rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* ------------------------------
+     NAVBAR
+  --------------------------------*/
+  .navbar {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  
+  /* ------------------------------
+     SHADOWS
+  --------------------------------*/
+  .shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .shadow-md {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ------------------------------
+     BADGES
+  --------------------------------*/
+  .badge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+  }
+  
+  .badge-blue {
+    background: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .badge-green {
+    background: #ecfdf5;
+    color: #059669;
+  }
+  
+  .badge-red {
+    background: #fef2f2;
+    color: #dc2626;
+  }
+  

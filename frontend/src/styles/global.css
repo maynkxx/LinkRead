@@ -1,0 +1,84 @@
+/* ------------------------------
+   GLOBAL RESET + TYPOGRAPHY
+--------------------------------*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html,
+  body {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb;
+    color: #111827;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  img {
+    max-width: 100%;
+    display: block;
+  }
+  
+  /* ------------------------------
+     SCROLLBAR - Modern & Clean
+  --------------------------------*/
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  
+  /* ------------------------------
+     UTILITY HELPERS
+  --------------------------------*/
+  .container {
+    width: 100%;
+    max-width: 1280px;
+    margin: auto;
+    padding: 0 1rem;
+  }
+  
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .text-muted {
+    color: #6b7280;
+  }
+  
+  .card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 1.2rem;
+  }
+  
+  /* Smooth transitions */
+  .transition {
+    transition: all 0.2s ease;
+  }
+  
