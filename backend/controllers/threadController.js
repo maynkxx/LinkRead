@@ -2,9 +2,23 @@ const Thread = require('../models/Thread')
 
 exports.createThread = async (req, res) => {
     try {
+        const { title, description } = req.body;
+
+        if (!title || !description) {
+            return res.status(400).json({ message: 'Title and description are required' });
+        }
+
+        if (title.length < 5) {
+            return res.status(400).json({ message: 'Title must be at least 5 characters long' });
+        }
+
+        if (description.length < 10) {
+            return res.status(400).json({ message: 'Description must be at least 10 characters long' });
+        }
+
         const thread = await Thread.create({
-            name: req.body.title, // Frontend sends title, model expects name
-            description: req.body.description,
+            name: title, // Frontend sends title, model expects name
+            description: description,
             creator: req.user.id // Model expects creator, not owner
         })
         res.json(thread)
@@ -16,7 +30,7 @@ exports.createThread = async (req, res) => {
 exports.getAllThreads = async (req, res) => {
     try {
         const threads = await Thread.find().sort({ createdAt: -1 });
-        
+
         // Transform data for frontend
         const response = threads.map(t => ({
             _id: t._id,
