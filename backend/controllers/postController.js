@@ -2,10 +2,24 @@ const Post = require('../models/Post')
 
 exports.createPost = async (req, res) => {
     try {
+        const { title, content, threadId } = req.body;
+
+        if (!title || !content || !threadId) {
+            return res.status(400).json({ message: 'Title, content, and thread ID are required' });
+        }
+
+        if (title.length < 5) {
+            return res.status(400).json({ message: 'Title must be at least 5 characters long' });
+        }
+
+        if (content.length < 10) {
+            return res.status(400).json({ message: 'Content must be at least 10 characters long' });
+        }
+
         const post = await Post.create({
-            title: req.body.title,
-            content: req.body.content, // Frontend sends content, model expects content
-            thread: req.body.threadId, // Frontend sends threadId
+            title,
+            content, // Frontend sends content, model expects content
+            thread: threadId, // Frontend sends threadId
             author: req.user.id, // Model expects author
             media: req.body.image ? [{ url: req.body.image, type: 'image' }] : []
         })
@@ -20,7 +34,7 @@ exports.getThreadPosts = async (req, res) => {
         const posts = await Post.find({ thread: req.params.threadId })
             .populate('author', 'username')
             .sort({ createdAt: -1 });
-        
+
         // Transform data for frontend
         const response = posts.map(p => ({
             _id: p._id,
@@ -72,11 +86,11 @@ exports.upvote = async (req, res) => {
 
         // Check if already upvoted (simplified)
         const alreadyUpvoted = post.votes?.some(v => v.user.toString() === req.user.id && v.value === 1);
-        
+
         if (!alreadyUpvoted) {
-             post.metrics.upvotes += 1;
-             post.votes.push({ user: req.user.id, value: 1 });
-             await post.save();
+            post.metrics.upvotes += 1;
+            post.votes.push({ user: req.user.id, value: 1 });
+            await post.save();
         }
 
         res.json({ message: 'Upvoted', upvotes: post.metrics.upvotes })
