@@ -1,60 +1,48 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+// src/components/common/Navbar.jsx
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+const Navbar = () => {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-
-        {/* Logo */}
-        <Link to="/" className="logo-link">
+    <nav style={{ backgroundColor: 'white', borderBottom: '1px solid var(--neutral-200)', padding: '1rem 0' }}>
+      <div className="container flex justify-between items-center">
+        <Link to="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary-600)' }}>
           Threaddit
         </Link>
-
-        {/* Desktop Menu */}
-        <div className="nav-links">
-          <Link to="/" className="">Home</Link>
-          <Link to="/threads" className="">Threads</Link>
-          <Link to="/messages" className="">Messages</Link>
-          <Link to="/profile" className="">Profile</Link>
-
-          <Link
-            to="/login"
-            className="btn-login"
-          >
-            Login
-          </Link>
+        
+        <div className="flex items-center gap-4">
+          <Link to="/" className="text-secondary hover:text-primary">Home</Link>
+          
+          {user ? (
+            <>
+              <Link to="/dashboard" className="text-secondary hover:text-primary">Dashboard</Link>
+              <Link to="/profile" className="text-secondary hover:text-primary">Profile</Link>
+              <button 
+                onClick={handleLogout} 
+                className="btn btn-secondary"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-secondary">Login</Link>
+              <Link to="/register" className="btn btn-primary">Register</Link>
+            </>
+          )}
         </div>
-
-        {/* Mobile Menu Icon */}
-        <button
-          className="mobile-menu-icon"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <FaTimes /> : <FaBars />}
-        </button>
       </div>
-
-      {/* Mobile Dropdown Menu */}
-      {menuOpen && (
-        <div className="mobile-menu">
-          <Link to="/" onClick={() => setMenuOpen(false)} className="block">Home</Link>
-          <Link to="/threads" onClick={() => setMenuOpen(false)} className="block">Threads</Link>
-          <Link to="/messages" onClick={() => setMenuOpen(false)} className="block">Messages</Link>
-          <Link to="/profile" onClick={() => setMenuOpen(false)} className="block">Profile</Link>
-
-          <Link
-            to="/login"
-            onClick={() => setMenuOpen(false)}
-            className="btn-login block text-center"
-          >
-            Login
-          </Link>
-        </div>
-      )}
     </nav>
   );
-}
+};
+
+export default Navbar;
