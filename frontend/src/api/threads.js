@@ -16,4 +16,4 @@ export const getTrendingThreads = () =>
   api.get("/threads/trending");
 
 export const getAllThreads = () =>
-  api.get("/threads/all");
+  api.get("/threads");

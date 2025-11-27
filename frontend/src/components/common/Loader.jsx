@@ -1,14 +1,12 @@
-const Loader = ({ fullScreen = false, message = "Loading..." }) => {
-  const wrapperClass = fullScreen
-    ? "fixed inset-0 flex items-center justify-center bg-black/60 z-50"
-    : "flex items-center justify-center py-8";
+import React from 'react';
 
+const Loader = ({ fullScreen = false, message = "Loading..." }) => {
   return (
-    <div className={wrapperClass}>
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-gray-500 border-t-white rounded-full animate-spin" />
+    <div className={fullScreen ? "loader-overlay" : "loader-container py-10"}>
+      <div className="loader-container">
+        <div className="spinner" />
         {message && (
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-secondary">
             {message}
           </p>
         )}

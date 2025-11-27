@@ -1,14 +1,14 @@
 import React from "react";
-import Navbar from "../components/common/NavBar";
+import Navbar from "../components/common/Navbar";
 
 const MainLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--neutral-50)' }}>
       {/* Navbar */}
       <Navbar />
 
       {/* Content */}
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="container" style={{ padding: '2rem 1rem' }}>
         {children}
       </main>
     </div>

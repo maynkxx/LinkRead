@@ -1,44 +1,93 @@
 const Thread = require('../models/Thread')
 
 exports.createThread = async (req, res) => {
-    const thread = await Thread.create({
-        name: req.body.name,
-        description: req.body.description,
-        owner: req.user.id
-    })
-    res.json(thread)
+    try {
+        const thread = await Thread.create({
+            name: req.body.title, // Frontend sends title, model expects name
+            description: req.body.description,
+            creator: req.user.id // Model expects creator, not owner
+        })
+        res.json(thread)
+    } catch (err) {
+        res.status(400).json({ message: err.message })
+    }
 }
 
 exports.getAllThreads = async (req, res) => {
-    const threads = await Thread.find()
-    res.json(threads)
+    try {
+        const threads = await Thread.find().sort({ createdAt: -1 });
+        
+        // Transform data for frontend
+        const response = threads.map(t => ({
+            _id: t._id,
+            title: t.name, // Map name to title
+            description: t.description,
+            postCount: t.stats?.postCount || 0, // Flatten stats
+            createdAt: t.createdAt
+        }));
+
+        res.json(response)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }
 
 exports.getThread = async (req, res) => {
-    const thread = await Thread.findById(req.params.id)
-    res.json(thread)
+    try {
+        const thread = await Thread.findById(req.params.threadId);
+        if (!thread) return res.status(404).json({ message: 'Thread not found' });
+
+        // Transform data for frontend
+        const response = {
+            _id: thread._id,
+            title: thread.name, // Map name to title
+            description: thread.description,
+            postCount: thread.stats?.postCount || 0,
+            createdAt: thread.createdAt
+        };
+
+        res.json(response)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }
 
 exports.joinThread = async (req, res) => {
-    await Thread.findByIdAndUpdate(req.params.id, {
-        $addToSet: { members: req.user.id }
-    })
-    res.json({ message: 'Joined' })
+    try {
+        await Thread.findByIdAndUpdate(req.params.threadId, {
+            $addToSet: { members: req.user.id }
+        })
+        res.json({ message: 'Joined' })
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }
 
 exports.leaveThread = async (req, res) => {
-    await Thread.findByIdAndUpdate(req.params.id, {
-        $pull: { members: req.user.id }
-    })
-    res.json({ message: 'Left' })
+    try {
+        await Thread.findByIdAndUpdate(req.params.threadId, {
+            $pull: { members: req.user.id }
+        })
+        res.json({ message: 'Left' })
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }
 
 exports.updateThread = async (req, res) => {
-    const updated = await Thread.findByIdAndUpdate(req.params.threadId, req.body, { new: true });
-    res.json(updated);
+    try {
+        const updated = await Thread.findByIdAndUpdate(req.params.threadId, req.body, { new: true });
+        res.json(updated);
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }
 
 exports.deleteThread = async (req, res) => {
-    await Thread.findByIdAndDelete(req.params.threadId);
-    res.json({ message: 'Deleted thread' });
+    try {
+        await Thread.findByIdAndDelete(req.params.threadId);
+        res.json({ message: 'Deleted thread' });
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }

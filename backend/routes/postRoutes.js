@@ -6,6 +6,7 @@ const {
   createPost,
   getPost,
   getThreadPosts,
+  upvote,
   // updatePost,
   // deletePost,
   // likePost,
@@ -23,6 +24,7 @@ router.get("/:postId", getPost);
 // router.get("/search/query", searchPosts);
 
 router.post("/", auth, upload.single("media"), createPost);
+router.post("/:postId/vote", auth, upvote);
 // router.post("/like/:postId", auth, likePost);
 // router.post("/save/:postId", auth, savePost);
 // router.post("/unsave/:postId", auth, unsavePost);
