@@ -2,37 +2,25 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const validator = require('validator');
-
 exports.register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
-    // Basic validation
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
-    }
-
-    // Check if user exists
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ message: 'Email already exists' });
 
-    // Hash password
     const hash = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await User.create({
       username,
       email,
       password: hash
     });
 
-    // Generate token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.json({ token, user });
   } catch (e) {
-    console.error('Registration error:', e);
     next(e);
   }
 };

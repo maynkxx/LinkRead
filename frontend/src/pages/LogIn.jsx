@@ -1,9 +1,8 @@
+// src/pages/LogIn.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../api/auth';
-import AuthLayout from '../layout/AuthLayout';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
+import Loader from '../components/common/Loader';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -29,53 +28,62 @@ const Login = () => {
   };
 
   return (
-    <AuthLayout
-      title="Welcome Back"
-      subtitle="Sign in to your account to continue"
-    >
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center">
-          {error}
+    <div className="flex justify-center items-center" style={{ minHeight: '80vh' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
+        <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Welcome Back</h2>
+        
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label className="label" htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              className="input"
+              placeholder="name@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="label" htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              className="input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            style={{ marginTop: '1rem', width: '100%' }}
+            disabled={loading}
+          >
+            {loading ? <div className="spinner" style={{ width: '1.5rem', height: '1.5rem', borderWidth: '2px' }} /> : 'Sign In'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-sm text-secondary">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-primary font-medium hover:underline">
+            Sign up
+          </Link>
         </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Input
-          label="Email Address"
-          type="email"
-          placeholder="name@company.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={loading}
-        />
-
-        <Input
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          disabled={loading}
-        />
-
-        <Button
-          type="submit"
-          className="w-full mt-2"
-          isLoading={loading}
-        >
-          Sign In
-        </Button>
-      </form>
-
-      <div className="mt-8 text-center text-sm text-neutral-600 dark:text-neutral-400">
-        Don't have an account?{' '}
-        <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium hover:underline transition-colors">
-          Sign up
-        </Link>
       </div>
-    </AuthLayout>
+      {loading && <Loader fullScreen />}
+    </div>
   );
 };
 
