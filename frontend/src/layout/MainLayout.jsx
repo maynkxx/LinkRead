@@ -3,12 +3,12 @@ import Navbar from "../components/common/Navbar";
 
 const MainLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 transition-colors duration-300">
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--neutral-50)' }}>
       {/* Navbar */}
       <Navbar />
 
       {/* Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container" style={{ padding: '2rem 1rem' }}>
         {children}
       </main>
     </div>

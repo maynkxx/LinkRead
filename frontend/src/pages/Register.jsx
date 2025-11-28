@@ -1,9 +1,8 @@
+// src/pages/Register.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../api/auth';
-import AuthLayout from '../layout/AuthLayout';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
+import Loader from '../components/common/Loader';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -19,6 +18,7 @@ const Register = () => {
     setLoading(true);
     try {
       const { data } = await registerUser({ username, email, password });
+      // Auto login after register or redirect to login
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/');
@@ -30,63 +30,75 @@ const Register = () => {
   };
 
   return (
-    <AuthLayout
-      title="Create Account"
-      subtitle="Join LinkRead to share your stories"
-    >
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center">
-          {error}
+    <div className="flex justify-center items-center" style={{ minHeight: '80vh' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
+        <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Create Account</h2>
+        
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label className="label" htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              className="input"
+              placeholder="johndoe"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="label" htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              className="input"
+              placeholder="name@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="label" htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              className="input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            style={{ marginTop: '1rem', width: '100%' }}
+            disabled={loading}
+          >
+            {loading ? <div className="spinner" style={{ width: '1.5rem', height: '1.5rem', borderWidth: '2px' }} /> : 'Sign Up'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-sm text-secondary">
+          Already have an account?{' '}
+          <Link to="/login" className="text-primary font-medium hover:underline">
+            Sign in
+          </Link>
         </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Input
-          label="Username"
-          type="text"
-          placeholder="johndoe"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          disabled={loading}
-        />
-
-        <Input
-          label="Email Address"
-          type="email"
-          placeholder="name@company.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={loading}
-        />
-
-        <Input
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          disabled={loading}
-        />
-
-        <Button
-          type="submit"
-          className="w-full mt-2"
-          isLoading={loading}
-        >
-          Sign Up
-        </Button>
-      </form>
-
-      <div className="mt-8 text-center text-sm text-neutral-600 dark:text-neutral-400">
-        Already have an account?{' '}
-        <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium hover:underline transition-colors">
-          Sign in
-        </Link>
       </div>
-    </AuthLayout>
+      {loading && <Loader fullScreen />}
+    </div>
   );
 };
 

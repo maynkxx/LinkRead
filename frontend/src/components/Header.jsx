@@ -1,44 +1,97 @@
 import { Link } from 'react-router-dom';
 import DarkModeToggle from './DarkModeToggle';
-import { Button } from './ui/Button';
+import { useState, useEffect } from 'react';
 
 export default function Header() {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Check if dark mode is active
+    const checkDarkMode = () => {
+      const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+      setIsDark(isDarkMode);
+    };
+
+    checkDarkMode();
+    
+    // Listen for theme changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <header className="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-40 transition-colors duration-300">
-      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link
-          to="/"
-          className="text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 transition-colors"
+    <header style={{
+      backgroundColor: isDark ? '#1F2937' : 'white',
+      borderBottom: `1px solid ${isDark ? '#374151' : '#E5E7EB'}`,
+      padding: '1rem 0',
+      marginBottom: '2rem',
+      transition: 'all 0.3s ease'
+    }}>
+      <nav className="container" style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <Link 
+          to="/" 
+          style={{ 
+            fontSize: '1.5rem', 
+            fontWeight: 'bold',
+            color: isDark ? '#F9FAFB' : '#1F2937',
+            transition: 'color 0.3s ease'
+          }}
         >
           LinkRead
         </Link>
-
-        <div className="flex items-center gap-6">
-          <Link
-            to="/"
-            className="text-neutral-600 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+        
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+          <Link 
+            to="/" 
+            style={{ 
+              color: isDark ? '#D1D5DB' : '#4B5563', 
+              fontWeight: '500',
+              transition: 'color 0.3s ease'
+            }}
           >
             Home
           </Link>
-          <Link
-            to="/about"
-            className="text-neutral-600 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+          <Link 
+            to="/about" 
+            style={{ 
+              color: isDark ? '#D1D5DB' : '#4B5563', 
+              fontWeight: '500',
+              transition: 'color 0.3s ease'
+            }}
           >
             About
           </Link>
-          <Link
-            to="/projects"
-            className="text-neutral-600 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+          <Link 
+            to="/projects" 
+            style={{ 
+              color: isDark ? '#D1D5DB' : '#4B5563', 
+              fontWeight: '500',
+              transition: 'color 0.3s ease'
+            }}
           >
             Projects
           </Link>
-
-          <div className="h-6 w-px bg-neutral-200 dark:bg-neutral-700 mx-2" />
-
           <DarkModeToggle />
-
-          <Link to="/signin">
-            <Button size="sm">Sign In</Button>
+          <Link 
+            to="/signin"
+            style={{
+              padding: '0.5rem 1.5rem',
+              backgroundColor: '#3B82F6',
+              color: 'white',
+              borderRadius: '0.375rem',
+              fontWeight: '500'
+            }}
+          >
+            Sign In
           </Link>
         </div>
       </nav>
