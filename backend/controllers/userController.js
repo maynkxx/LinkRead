@@ -2,103 +2,84 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 
-exports.getUserProfile = async (req, res, next) => {
+const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json(user);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-exports.updateUserProfile = async (req, res, next) => {
+const updateUserProfile = async (req, res) => {
   try {
-    const updates = req.body;
+    const user = await User.findById(req.user.id);
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      updates,
-      { new: true }
-    ).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    res.json(user);
-  } catch (e) {
-    next(e);
+    user.username = req.body.username || user.username;
+    user.profilePic = req.body.profilePic || user.profilePic;
+    
+    if (req.body.password) {
+      // Note: If you add password update logic later, you need to hash it here
+      // For now, we stick to basic profile updates to avoid complexity
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      profilePic: updatedUser.profilePic,
+      streak: updatedUser.streak
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-exports.deleteUserAccount = async (req, res, next) => {
+const getUserPosts = async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.user.id);
-    res.json({ message: "Account deleted" });
-  } catch (e) {
-    next(e);
-  }
-};
-
-exports.followUser = async (req, res, next) => {
-  try {
-    const userId = req.params.userId;
-
-    await User.findByIdAndUpdate(req.user.id, { $addToSet: { following: userId } });
-    await User.findByIdAndUpdate(userId, { $addToSet: { followers: req.user.id } });
-
-    res.json({ message: "Followed" });
-  } catch (e) {
-    next(e);
-  }
-};
-
-exports.unfollowUser = async (req, res, next) => {
-  try {
-    const userId = req.params.userId;
-
-    await User.findByIdAndUpdate(req.user.id, { $pull: { following: userId } });
-    await User.findByIdAndUpdate(userId, { $pull: { followers: req.user.id } });
-
-    res.json({ message: "Unfollowed" });
-  } catch (e) {
-    next(e);
-  }
-};
-
-exports.getSavedPosts = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user.id).populate("savedPosts");
-    res.json(user.savedPosts || []);
-  } catch (e) {
-    next(e);
-  }
-};
-
-exports.getUserPosts = async (req, res, next) => {
-  try {
-    const posts = await Post.find({ user: req.params.userId });
+    const posts = await Post.find({ author: req.params.userId }).sort({ createdAt: -1 });
     res.json(posts);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-exports.getUserComments = async (req, res, next) => {
+const getUserComments = async (req, res) => {
   try {
-    const comments = await Comment.find({ user: req.params.userId });
+    const comments = await Comment.find({ author: req.params.userId }).sort({ createdAt: -1 });
     res.json(comments);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-exports.searchUsers = async (req, res, next) => {
+const searchUsers = async (req, res) => {
   try {
     const query = req.query.q || "";
-
+    
     const users = await User.find({
       username: { $regex: query, $options: "i" }
     }).select("-password");
 
     res.json(users);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
+};
+
+module.exports = {
+  getUserProfile,
+  updateUserProfile,
+  getUserPosts,
+  getUserComments,
+  searchUsers
 };

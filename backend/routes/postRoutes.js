@@ -1,37 +1,21 @@
 const express = require("express");
-const auth = require("../middleware/auth");
-const upload = require("../middleware/upload");
-
+const router = express.Router();
 const {
   createPost,
-  getPost,
-  getThreadPosts,
-  upvote,
-  // updatePost,
-  // deletePost,
-  // likePost,
-  // savePost,
-  // unsavePost,
-  // reportPost,
-  // searchPosts
+  getAllPosts,
+  getPostById,
+  toggleUpvote,
+  deletePost
 } = require("../controllers/postController");
+const { protect } = require("../middleware/auth");
 
-const router = express.Router();
+// Public Routes (Anyone can see blogs)
+router.get("/", getAllPosts);
+router.get("/:id", getPostById);
 
-router.get("/", (req,res) => { res.status(501).json({ message: "Not implemented" }) });
-router.get("/thread/:threadId", getThreadPosts);
-router.get("/:postId", getPost);
-// router.get("/search/query", searchPosts);
-
-router.post("/", auth, upload.single("media"), createPost);
-router.post("/:postId/vote", auth, upvote);
-// router.post("/like/:postId", auth, likePost);
-// router.post("/save/:postId", auth, savePost);
-// router.post("/unsave/:postId", auth, unsavePost);
-// router.post("/report/:postId", auth, reportPost);
-
-// router.put("/:postId", auth, upload.single("media"), updatePost);
-
-// router.delete("/:postId", auth, deletePost);
+// Protected Routes (Must be logged in)
+router.post("/", protect, createPost);
+router.put("/upvote/:id", protect, toggleUpvote);
+router.delete("/:id", protect, deletePost);
 
 module.exports = router;

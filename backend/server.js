@@ -1,14 +1,13 @@
-// backend/server.js
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
-const threadRoutes = require("./routes/threadRoutes");
+// const threadRoutes = require("./routes/threadRoutes");  <-- Comment this
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
-const messageRoutes = require("./routes/messageRoutes");
+// const messageRoutes = require("./routes/messageRoutes"); <-- Comment this
 const errorHandler = require("./middleware/errorHandler");
 
 dotenv.config();
@@ -23,10 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/threads", threadRoutes);
+// app.use("/api/threads", threadRoutes); <-- Comment this
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
-app.use("/api/messages", messageRoutes);
+// app.use("/api/messages", messageRoutes); <-- Comment this
 
 app.use(errorHandler);
 

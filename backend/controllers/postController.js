@@ -1,100 +1,97 @@
-const Post = require('../models/Post')
+const Post = require('../models/Post');
 
-exports.createPost = async (req, res) => {
+const createPost = async (req, res) => {
     try {
-        const post = await Post.create({
-            title: req.body.title,
-            content: req.body.content, // Frontend sends content, model expects content
-            thread: req.body.threadId, // Frontend sends threadId
-            author: req.user.id, // Model expects author
-            media: req.body.image ? [{ url: req.body.image, type: 'image' }] : []
-        })
-        res.json(post)
-    } catch (err) {
-        res.status(400).json({ message: err.message })
-    }
-}
+        const { title, content, tips, learnings, codeSnippet, image } = req.body;
 
-exports.getThreadPosts = async (req, res) => {
-    try {
-        const posts = await Post.find({ thread: req.params.threadId })
-            .populate('author', 'username')
-            .sort({ createdAt: -1 });
-        
-        // Transform data for frontend
-        const response = posts.map(p => ({
-            _id: p._id,
-            title: p.title,
-            content: p.content,
-            author: { username: p.author?.username || 'Unknown' },
-            createdAt: p.createdAt,
-            upvotes: p.metrics?.upvotes || 0,
-            commentCount: p.metrics?.commentCount || 0,
-            image: p.media?.[0]?.url || null
-        }));
-
-        res.json(response)
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
-}
-
-exports.getPost = async (req, res) => {
-    try {
-        console.log('getPost called with postId:', req.params.postId);
-        const post = await Post.findById(req.params.postId).populate('author', 'username');
-        console.log('Post found:', post ? post._id : 'null');
-        if (!post) return res.status(404).json({ message: 'Post not found' });
-
-        // Transform data for frontend
-        const response = {
-            _id: post._id,
-            title: post.title,
-            content: post.content,
-            author: { username: post.author?.username || 'Unknown' },
-            createdAt: post.createdAt,
-            upvotes: post.metrics?.upvotes || 0,
-            commentCount: post.metrics?.commentCount || 0,
-            image: post.media?.[0]?.url || null
-        };
-
-        res.json(response)
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
-}
-
-exports.upvote = async (req, res) => {
-    try {
-        // Simple increment for now, full logic in model
-        const post = await Post.findById(req.params.postId);
-        if (!post) return res.status(404).json({ message: 'Post not found' });
-
-        // Check if already upvoted (simplified)
-        const alreadyUpvoted = post.votes?.some(v => v.user.toString() === req.user.id && v.value === 1);
-        
-        if (!alreadyUpvoted) {
-             post.metrics.upvotes += 1;
-             post.votes.push({ user: req.user.id, value: 1 });
-             await post.save();
+        if (!title || !content) {
+             return res.status(400).json({ message: "Title and Content are required" });
         }
 
-        res.json({ message: 'Upvoted', upvotes: post.metrics.upvotes })
-    } catch (err) {
-        res.status(500).json({ message: err.message })
+        const post = await Post.create({
+            title,
+            content,
+            tips: tips || "",
+            learnings: learnings || "",
+            codeSnippet: codeSnippet || "",
+            image: image || "",
+            author: req.user.id
+        });
+
+        res.status(201).json(post);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
     }
 }
 
-exports.downvote = async (req, res) => {
+const getAllPosts = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.postId);
-        if (!post) return res.status(404).json({ message: 'Post not found' });
-
-        post.metrics.downvotes += 1;
-        await post.save();
-
-        res.json({ message: 'Downvoted' })
-    } catch (err) {
-        res.status(500).json({ message: err.message })
+        const posts = await Post.find()
+            .populate('author', 'username profilePic')
+            .sort({ createdAt: -1 });
+        res.json(posts);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
     }
 }
+
+const getPostById = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id).populate('author', 'username profilePic');
+        
+        if(!post) {
+            return res.status(404).json({message: "Post not found"});
+        }
+        
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+}
+
+const toggleUpvote = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (post.upvotes.includes(req.user.id)) {
+            await post.updateOne({ $pull: { upvotes: req.user.id } });
+            res.json({ message: "Upvote removed" });
+        } else {
+            await post.updateOne({ $addToSet: { upvotes: req.user.id } });
+            res.json({ message: "Upvoted" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+}
+
+const deletePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (post.author.toString() !== req.user.id) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        await post.deleteOne();
+        res.json({ message: "Post removed" });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+}
+
+module.exports = { 
+    createPost, 
+    getAllPosts, 
+    getPostById, 
+    toggleUpvote, 
+    deletePost 
+};
