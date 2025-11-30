@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_URL from "../api";
+import "../styles/Register.css";
 
 export default function Register() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -12,7 +13,9 @@ export default function Register() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
     });
+
     const data = await res.json();
+
     if (data.token) {
       localStorage.setItem("token", data.token);
       navigate("/");
@@ -22,12 +25,42 @@ export default function Register() {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <input placeholder="username" onChange={e => setForm({ ...form, username: e.target.value })} />
-      <input placeholder="email" onChange={e => setForm({ ...form, email: e.target.value })} />
-      <input placeholder="password" type="password" onChange={e => setForm({ ...form, password: e.target.value })} />
-      <button onClick={submit}>Register</button>
+    <div className="container register-wrapper">
+
+      <div className="register-card">
+        <h1 className="register-title">Create an Account</h1>
+        <p className="register-sub">Join the community and start sharing your thoughts.</p>
+
+        <div className="register-form">
+
+          <label>Username</label>
+          <input 
+            className="input"
+            placeholder="Enter your username"
+            onChange={e => setForm({ ...form, username: e.target.value })}
+          />
+
+          <label>Email</label>
+          <input 
+            className="input"
+            placeholder="Enter your email"
+            onChange={e => setForm({ ...form, email: e.target.value })}
+          />
+
+          <label>Password</label>
+          <input 
+            className="input"
+            type="password"
+            placeholder="Create a password"
+            onChange={e => setForm({ ...form, password: e.target.value })}
+          />
+
+          <button className="btn btn-primary register-btn" onClick={submit}>
+            Register
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }
