@@ -26,8 +26,8 @@ const updateUserProfile = async (req, res) => {
     user.profilePic = req.body.profilePic || user.profilePic;
     
     if (req.body.password) {
-      // Note: If you add password update logic later, you need to hash it here
-      // For now, we stick to basic profile updates to avoid complexity
+      // if we add password update logic later we put it here  
+     
     }
 
     const updatedUser = await user.save();

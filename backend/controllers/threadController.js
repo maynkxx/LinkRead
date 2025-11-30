@@ -3,9 +3,9 @@ const Thread = require('../models/Thread')
 exports.createThread = async (req, res) => {
     try {
         const thread = await Thread.create({
-            name: req.body.title, // Frontend sends title, model expects name
+            name: req.body.title, 
             description: req.body.description,
-            creator: req.user.id // Model expects creator, not owner
+            creator: req.user.id 
         })
         res.json(thread)
     } catch (err) {
@@ -17,12 +17,11 @@ exports.getAllThreads = async (req, res) => {
     try {
         const threads = await Thread.find().sort({ createdAt: -1 });
         
-        // Transform data for frontend
         const response = threads.map(t => ({
             _id: t._id,
-            title: t.name, // Map name to title
+            title: t.name, 
             description: t.description,
-            postCount: t.stats?.postCount || 0, // Flatten stats
+            postCount: t.stats?.postCount || 0, 
             createdAt: t.createdAt
         }));
 
@@ -36,11 +35,9 @@ exports.getThread = async (req, res) => {
     try {
         const thread = await Thread.findById(req.params.threadId);
         if (!thread) return res.status(404).json({ message: 'Thread not found' });
-
-        // Transform data for frontend
         const response = {
             _id: thread._id,
-            title: thread.name, // Map name to title
+            title: thread.name, 
             description: thread.description,
             postCount: thread.stats?.postCount || 0,
             createdAt: thread.createdAt
