@@ -88,9 +88,9 @@ export default function PostDetails() {
         {/* VOTING SECTION */}
         <div className="vote-section">
           <div className="vote-buttons">
-            <button onClick={() => handleVote("upvote")} className="vote-btn">👍</button>
+            <button onClick={() => handleVote("upvote")} className="vote-btn">Upvote</button>
             <span className="vote-score">{score}</span>
-            <button onClick={() => handleVote("downvote")} className="vote-btn">👎</button>
+            <button onClick={() => handleVote("downvote")} className="vote-btn">Downvote</button>
           </div>
 
           {token && (
