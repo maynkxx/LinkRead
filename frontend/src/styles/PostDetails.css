@@ -11,7 +11,7 @@
   border-radius: 14px;
   border: 1px solid #e5e7eb;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .post-title {
@@ -39,7 +39,7 @@
   padding: 1.75rem;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   margin-bottom: 2rem;
 }
 
@@ -79,4 +79,53 @@
   margin-top: 0.25rem;
   color: #1f2937;
   font-size: 1rem;
+}
+
+/* VOTING SECTION */
+.vote-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.vote-btn {
+  background: #f3f4f6;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: 0.2s;
+}
+
+.vote-btn:hover {
+  background: #e5e7eb;
+}
+
+.vote-score {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 2rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  color: #6b7280;
+}
+
+.login-prompt a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-prompt a:hover {
+  text-decoration: underline;
 }
