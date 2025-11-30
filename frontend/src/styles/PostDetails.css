@@ -84,11 +84,17 @@
 /* VOTING SECTION */
 .vote-section {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid #eee;
+}
+
+.vote-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .vote-btn {
@@ -109,6 +115,40 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: #374151;
+}
+
+.report-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.report-btn:hover {
+  color: #ef4444;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-link {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.report-link:hover {
+  color: #ef4444;
+  text-decoration: underline;
 }
 
 .login-prompt {

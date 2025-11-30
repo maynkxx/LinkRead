@@ -42,6 +42,13 @@ export default function CreatePost() {
             onChange={e => setPost({ ...post, content: e.target.value })}
           ></textarea>
 
+          <label>Tags (comma separated)</label>
+          <input
+            className="input"
+            placeholder="e.g. React, Tech, Life"
+            onChange={e => setPost({ ...post, tags: e.target.value.split(",").map(t => t.trim()) })}
+          />
+
           <button className="btn btn-primary create-btn" onClick={submit}>
             Publish Post
           </button>

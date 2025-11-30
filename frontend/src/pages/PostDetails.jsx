@@ -50,6 +50,28 @@ export default function PostDetails() {
     }
   };
 
+  const handleReport = async (targetId, targetModel) => {
+    if (!token) {
+      alert("Please login to report content.");
+      return;
+    }
+
+    const reason = prompt("Please provide a reason for reporting this content:");
+    if (!reason) return;
+
+    const res = await fetch(`${API_URL}/reports`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ targetId, targetModel, reason })
+    });
+
+    if (res.ok) {
+      alert("Report submitted successfully. Thank you for helping keep our community safe.");
+    } else {
+      alert("Failed to submit report.");
+    }
+  };
+
   if (!post) return <div className="container"><p>Loading...</p></div>;
 
   const score = (post.upvotes?.length || 0) - (post.downvotes?.length || 0);
@@ -65,9 +87,20 @@ export default function PostDetails() {
 
         {/* VOTING SECTION */}
         <div className="vote-section">
-          <button onClick={() => handleVote("upvote")} className="vote-btn">👍</button>
-          <span className="vote-score">{score}</span>
-          <button onClick={() => handleVote("downvote")} className="vote-btn">👎</button>
+          <div className="vote-buttons">
+            <button onClick={() => handleVote("upvote")} className="vote-btn">👍</button>
+            <span className="vote-score">{score}</span>
+            <button onClick={() => handleVote("downvote")} className="vote-btn">👎</button>
+          </div>
+
+          {token && (
+            <button
+              className="report-btn"
+              onClick={() => handleReport(post._id, "Post")}
+            >
+              🚩 Report Post
+            </button>
+          )}
         </div>
       </div>
 
@@ -99,7 +132,17 @@ export default function PostDetails() {
 
         {(post.comments || []).map(c => (
           <div key={c._id} className="comment-item">
-            <p className="comment-author">{c.author.username}</p>
+            <div className="comment-header">
+              <p className="comment-author">{c.author.username}</p>
+              {token && (
+                <button
+                  className="report-link"
+                  onClick={() => handleReport(c._id, "Comment")}
+                >
+                  Report
+                </button>
+              )}
+            </div>
             <p className="comment-text">{c.content}</p>
           </div>
         ))}

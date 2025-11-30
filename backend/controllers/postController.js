@@ -2,7 +2,7 @@ const Post = require('../models/Post');
 
 const createPost = async (req, res) => {
     try {
-        const { title, content, tips, learnings, codeSnippet, image } = req.body;
+        const { title, content, tips, learnings, codeSnippet, image, tags } = req.body;
 
         if (!title || !content) {
             return res.status(400).json({ message: "Title and Content are required" });
@@ -15,18 +15,30 @@ const createPost = async (req, res) => {
             learnings: learnings || "",
             codeSnippet: codeSnippet || "",
             image: image || "",
+            tags: tags || [],
             author: req.user.id
         });
 
         res.status(201).json(post);
     } catch (error) {
-        res.status(500).json({ message: "Server Error" });
+        res.status(500).json({ message: error.message, stack: error.stack, receivedBody: req.body });
     }
 }
 
 const getAllPosts = async (req, res) => {
     try {
-        let posts = await Post.find()
+        const { search, tag } = req.query;
+        let query = {};
+
+        if (search) {
+            query.$text = { $search: search };
+        }
+
+        if (tag) {
+            query.tags = tag;
+        }
+
+        let posts = await Post.find(query)
             .populate('author', 'username profilePic')
             .sort({ createdAt: -1 });
 

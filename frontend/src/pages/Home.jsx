@@ -6,14 +6,23 @@ import "../styles/Home.css";
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [popularPosts, setPopularPosts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
 
-  useEffect(() => {
-    fetch(`${API_URL}/posts`)
+  const fetchPosts = (query = "") => {
+    let url = `${API_URL}/posts`;
+    if (query) url += `?${query}`;
+
+    fetch(url)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setPosts(data);
       })
       .catch(err => console.error("Failed to fetch posts", err));
+  };
+
+  useEffect(() => {
+    fetchPosts();
 
     fetch(`${API_URL}/posts/popular`)
       .then(res => res.json())
@@ -23,6 +32,24 @@ export default function Home() {
       .catch(err => console.error("Failed to fetch popular posts", err));
   }, []);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchPosts(`search=${search}`);
+    setSelectedTag(""); // Clear tag when searching
+  };
+
+  const handleTagClick = (tag) => {
+    setSelectedTag(tag);
+    setSearch(""); // Clear search when filtering by tag
+    fetchPosts(`tag=${tag}`);
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setSelectedTag("");
+    fetchPosts();
+  };
+
   return (
     <div className="container">
 
@@ -30,6 +57,24 @@ export default function Home() {
       <div className="hero">
         <h1 className="hero-title">Latest Discussions</h1>
         <p className="hero-sub">Join the conversation and explore what's trending.</p>
+
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Search posts..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-btn">Search</button>
+        </form>
+
+        {selectedTag && (
+          <div className="active-filter">
+            <span>Filtered by: <strong>{selectedTag}</strong></span>
+            <button onClick={clearFilters} className="clear-btn">Clear</button>
+          </div>
+        )}
       </div>
 
       <div className="home-layout">
@@ -40,6 +85,11 @@ export default function Home() {
               <Link to={`/post/${post._id}`}>
                 <h3>{post.title}</h3>
               </Link>
+              <div className="post-tags">
+                {post.tags?.map(tag => (
+                  <span key={tag} className="tag-chip" onClick={() => handleTagClick(tag)}>#{tag}</span>
+                ))}
+              </div>
               <p>By {post?.author?.username}</p>
             </div>
           ))}

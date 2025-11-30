@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const reportRoutes = require("./routes/reportRoutes"); // Added this line
 const errorHandler = require("./middleware/errorHandler");
 
 dotenv.config();
@@ -31,4 +32,4 @@ app.use("/api/comments", commentRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT} `)); // Restart trigger
