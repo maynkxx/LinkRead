@@ -32,7 +32,27 @@ export default function PostDetails() {
     setComment("");
   };
 
+  const handleVote = async (type) => {
+    if (!token) {
+      alert("Please login to vote!");
+      return;
+    }
+
+    const res = await fetch(`${API_URL}/posts/${id}/${type}`, {
+      method: "PUT",
+      headers: authHeaders()
+    });
+
+    if (res.ok) {
+      // Refresh post data to show updated votes
+      const updatedPost = await fetch(`${API_URL}/posts/${id}`).then(res => res.json());
+      setPost(updatedPost);
+    }
+  };
+
   if (!post) return <div className="container"><p>Loading...</p></div>;
+
+  const score = (post.upvotes?.length || 0) - (post.downvotes?.length || 0);
 
   return (
     <div className="container post-wrapper">
@@ -42,10 +62,17 @@ export default function PostDetails() {
         <h1 className="post-title">{post.title}</h1>
         <p className="post-author">By {post?.author?.username}</p>
         <p className="post-content">{post.content}</p>
+
+        {/* VOTING SECTION */}
+        <div className="vote-section">
+          <button onClick={() => handleVote("upvote")} className="vote-btn">👍</button>
+          <span className="vote-score">{score}</span>
+          <button onClick={() => handleVote("downvote")} className="vote-btn">👎</button>
+        </div>
       </div>
 
       {/* COMMENT INPUT */}
-      {token && (
+      {token ? (
         <div className="comment-card">
           <h2>Add a Comment</h2>
 
@@ -59,6 +86,10 @@ export default function PostDetails() {
           <button className="btn btn-primary comment-btn" onClick={submitComment}>
             Comment
           </button>
+        </div>
+      ) : (
+        <div className="login-prompt">
+          <p>Please <a href="/login">login</a> to comment or vote.</p>
         </div>
       )}
 

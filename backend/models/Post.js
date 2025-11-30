@@ -38,6 +38,12 @@ const postSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    downvotes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     isVerified: {
       type: Boolean,
       default: false,

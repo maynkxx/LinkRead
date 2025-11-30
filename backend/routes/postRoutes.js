@@ -3,16 +3,20 @@ const router = express.Router();
 const {
   createPost,
   getAllPosts,
+  getPopularPosts,
   getPostById,
-  toggleUpvote,
+  upvotePost,
+  downvotePost,
   deletePost
 } = require("../controllers/postController");
 const { protect } = require("../middleware/auth");
 
 router.get("/", getAllPosts);
+router.get("/popular", getPopularPosts);
 router.get("/:id", getPostById);
 router.post("/", protect, createPost);
-router.put("/upvote/:id", protect, toggleUpvote);
+router.put("/:id/upvote", protect, upvotePost);
+router.put("/:id/downvote", protect, downvotePost);
 router.delete("/:id", protect, deletePost);
 
 module.exports = router;
