@@ -16,7 +16,6 @@ const router = express.Router();
 
 router.get("/", getAllThreads);
 router.get("/:threadId", getThread);
-// router.get("/search/query", searchThreads);
 
 router.post(
   "/",

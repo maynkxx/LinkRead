@@ -4,10 +4,8 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
-// const threadRoutes = require("./routes/threadRoutes");  <-- Comment this
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
-// const messageRoutes = require("./routes/messageRoutes"); <-- Comment this
 const errorHandler = require("./middleware/errorHandler");
 
 dotenv.config();
@@ -15,19 +13,22 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:5174"],
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// API Routes
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-// app.use("/api/threads", threadRoutes); <-- Comment this
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
-// app.use("/api/messages", messageRoutes); <-- Comment this
+
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -20,21 +20,17 @@ exports.getConversation = async (req, res) => {
 }
 
 exports.getInbox = async (_req, res) => {
-    // stub implementation
     res.json({ message: 'Inbox not implemented' });
 }
 
 exports.markAsSeen = async (_req, res) => {
-    // stub implementation
     res.json({ message: 'Mark as seen not implemented' });
 }
 
 exports.deleteMessage = async (_req, res) => {
-    // stub implementation
     res.json({ message: 'Delete message not implemented' });
 }
 
 exports.editMessage = async (_req, res) => {
-    // stub implementation
     res.json({ message: 'Edit message not implemented' });
 }
