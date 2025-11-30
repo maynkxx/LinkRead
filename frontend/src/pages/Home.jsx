@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import API_URL from "../api";
 import { Link } from "react-router-dom";
+import API_URL from "../api";
+import "../styles/Home.css";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -12,16 +13,24 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <h2>Latest Posts</h2>
-      {posts.map(p => (
-        <div key={p._id} style={{ borderBottom: "1px solid #ccc", padding: 10 }}>
-          <Link to={`/post/${p._id}`}>
-            <h3>{p.title}</h3>
+    <div className="container">
+
+      {/* HERO SECTION */}
+      <div className="hero">
+        <h1 className="hero-title">Latest Discussions</h1>
+        <p className="hero-sub">Join the conversation and explore what's trending.</p>
+      </div>
+
+      {/* POSTS LIST */}
+      {posts.map(post => (
+        <div key={post._id} className="post-card">
+          <Link to={`/post/${post._id}`}>
+            <h3>{post.title}</h3>
           </Link>
-          <p>By {p?.author?.username}</p>
+          <p>By {post?.author?.username}</p>
         </div>
       ))}
+
     </div>
   );
 }
