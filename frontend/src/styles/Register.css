@@ -1,0 +1,54 @@
+/* REGISTER PAGE WRAPPER */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 3rem;
+}
+
+/* REGISTER CARD */
+.register-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+/* TITLE & SUBTITLE */
+.register-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.register-sub {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* FORM */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 1rem;
+}
+
+.register-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.register-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 10px;
+}
