@@ -1,0 +1,70 @@
+/* PAGE WRAPPER */
+.create-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 3rem;
+}
+
+/* CARD */
+.create-card {
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* TITLE & SUBTITLE */
+.create-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.create-sub {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* FORM */
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.create-form label {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* TEXTAREA */
+.textarea {
+  width: 100%;
+  height: 160px;
+  padding: 1rem;
+  resize: vertical;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  font-size: 1rem;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* BUTTON */
+.create-btn {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
