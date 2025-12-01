@@ -50,6 +50,46 @@ export default function Home() {
     fetchPosts();
   };
 
+  const handleDelete = async (postId, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!window.confirm("Are you sure you want to delete this post?")) {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_URL}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (res.ok) {
+      alert("Post deleted successfully!");
+      fetchPosts(); // Refresh the list
+    } else {
+      const data = await res.json();
+      alert(data.message || "Failed to delete post.");
+    }
+  };
+
+  // Decode token to get current user ID
+  const getCurrentUserId = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const currentUserId = getCurrentUserId();
+
   return (
     <div className="container">
 
@@ -90,7 +130,25 @@ export default function Home() {
                   <span key={tag} className="tag-chip" onClick={() => handleTagClick(tag)}>#{tag}</span>
                 ))}
               </div>
-              <p>By {post?.author?.username}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p>By {post?.author?.username}</p>
+                {currentUserId && post.author?._id === currentUserId && (
+                  <button
+                    onClick={(e) => handleDelete(post._id, e)}
+                    style={{
+                      background: '#dc2626',
+                      color: 'white',
+                      border: 'none',
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >
+                    🗑️ Delete
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

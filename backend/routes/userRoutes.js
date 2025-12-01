@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   getUserProfile,
+  getMyProfile,
   updateUserProfile,
   getUserPosts,
   getUserComments,
@@ -10,6 +11,7 @@ const {
 const { protect } = require("../middleware/auth");
 
 router.get("/search", searchUsers);
+router.get("/me", protect, getMyProfile);
 router.get("/:userId", getUserProfile);
 router.put("/profile", protect, updateUserProfile);
 router.get("/posts/:userId", getUserPosts);

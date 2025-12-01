@@ -72,9 +72,42 @@ export default function PostDetails() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this post? This action cannot be undone.")) {
+      return;
+    }
+
+    const res = await fetch(`${API_URL}/posts/${id}`, {
+      method: "DELETE",
+      headers: authHeaders()
+    });
+
+    if (res.ok) {
+      alert("Post deleted successfully!");
+      window.location.href = "/";
+    } else {
+      const data = await res.json();
+      alert(data.message || "Failed to delete post.");
+    }
+  };
+
   if (!post) return <div className="container"><p>Loading...</p></div>;
 
   const score = (post.upvotes?.length || 0) - (post.downvotes?.length || 0);
+
+  // Decode token to get current user ID
+  const getCurrentUserId = () => {
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const currentUserId = getCurrentUserId();
+  const isAuthor = currentUserId && post.author?._id === currentUserId;
 
   return (
     <div className="container post-wrapper">
@@ -93,14 +126,26 @@ export default function PostDetails() {
             <button onClick={() => handleVote("downvote")} className="vote-btn">Downvote</button>
           </div>
 
-          {token && (
-            <button
-              className="report-btn"
-              onClick={() => handleReport(post._id, "Post")}
-            >
-              🚩 Report Post
-            </button>
-          )}
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {token && (
+              <button
+                className="report-btn"
+                onClick={() => handleReport(post._id, "Post")}
+              >
+                🚩 Report Post
+              </button>
+            )}
+
+            {isAuthor && (
+              <button
+                className="report-btn"
+                style={{ background: '#dc2626', color: 'white' }}
+                onClick={handleDelete}
+              >
+                🗑️ Delete Post
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
