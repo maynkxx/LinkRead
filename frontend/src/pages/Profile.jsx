@@ -7,6 +7,7 @@ export default function Profile() {
     const [user, setUser] = useState({ username: "User", email: "user@example.com" });
     const [myPosts, setMyPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("posts");
     const token = getToken();
 
     useEffect(() => {
@@ -47,6 +48,18 @@ export default function Profile() {
         fetchMyPosts();
     }, [token]);
 
+    const fetchProfile = async () => {
+        // Placeholder for fetching user profile
+    };
+
+    const fetchMyPosts = async () => {
+        // Placeholder for fetching my posts
+    };
+
+    const handleEditProfile = () => {
+        alert("Edit Profile feature coming soon!");
+    };
+
     if (!token) {
         return (
             <div className="container profile-wrapper">
@@ -74,7 +87,7 @@ export default function Profile() {
                             <span className="badge">Writer</span>
                         </div>
                     </div>
-                    <button className="btn btn-secondary edit-profile-btn">Edit Profile</button>
+                    <button className="btn btn-secondary edit-profile-btn" onClick={handleEditProfile}>Edit Profile</button>
                 </div>
 
                 {/* STATS GRID */}
@@ -97,29 +110,56 @@ export default function Profile() {
             {/* CONTENT TABS */}
             <div className="profile-content">
                 <div className="content-tabs">
-                    <button className="tab active">My Posts</button>
-                    <button className="tab">Saved</button>
-                    <button className="tab">Settings</button>
+                    <button
+                        className={`tab ${activeTab === "posts" ? "active" : ""}`}
+                        onClick={() => setActiveTab("posts")}
+                    >
+                        My Posts
+                    </button>
+                    <button
+                        className={`tab ${activeTab === "saved" ? "active" : ""}`}
+                        onClick={() => setActiveTab("saved")}
+                    >
+                        Saved
+                    </button>
+                    <button
+                        className={`tab ${activeTab === "settings" ? "active" : ""}`}
+                        onClick={() => setActiveTab("settings")}
+                    >
+                        Settings
+                    </button>
                 </div>
 
                 <div className="tab-panel">
-                    {loading ? (
-                        <p className="text-center">Loading posts...</p>
-                    ) : myPosts.length > 0 ? (
-                        <div className="posts-grid">
-                            {myPosts.map(post => (
-                                <div key={post._id} className="card post-card">
-                                    <Link to={`/post/${post._id}`} className="post-link">
-                                        <h3 className="post-title">{post.title}</h3>
-                                    </Link>
-                                    <p className="post-excerpt">{post.content?.substring(0, 100)}...</p>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
+                    {activeTab === "posts" && (
+                        loading ? (
+                            <p className="text-center">Loading posts...</p>
+                        ) : myPosts.length > 0 ? (
+                            <div className="posts-grid">
+                                {myPosts.map(post => (
+                                    <div key={post._id} className="card post-card">
+                                        <Link to={`/post/${post._id}`} className="post-link">
+                                            <h3 className="post-title">{post.title}</h3>
+                                        </Link>
+                                        <p className="post-excerpt">{post.content?.substring(0, 100)}...</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="empty-state">
+                                <p>You haven't published any posts yet.</p>
+                                <Link to="/create" className="btn btn-primary">Create First Post</Link>
+                            </div>
+                        )
+                    )}
+                    {activeTab === "saved" && (
                         <div className="empty-state">
-                            <p>You haven't published any posts yet.</p>
-                            <Link to="/create" className="btn btn-primary">Create First Post</Link>
+                            <p>No saved posts yet.</p>
+                        </div>
+                    )}
+                    {activeTab === "settings" && (
+                        <div className="empty-state">
+                            <p>Settings coming soon.</p>
                         </div>
                     )}
                 </div>
