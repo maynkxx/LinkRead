@@ -1,241 +1,158 @@
-/* PROFILE CONTAINER */
-.profile-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+/* PAGE WRAPPER */
+.profile-wrapper {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  max-width: 900px;
 }
 
-/* PROFILE HEADER */
+/* PROFILE CARD */
+.profile-card {
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 3rem;
+}
+
 .profile-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.profile-avatar-section {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
 }
 
 .profile-avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  border: 3px solid #2563eb;
-  object-fit: cover;
-}
-
-.profile-info h1 {
-  font-size: 1.8rem;
-  color: #111827;
-  margin-bottom: 0.25rem;
-}
-
-.profile-email {
-  color: #6b7280;
-  font-size: 0.95rem;
-}
-
-/* EDIT PROFILE SECTION */
-.edit-profile-section {
-  background: #fef3c7;
-  padding: 2rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  border: 1px solid #fbbf24;
-}
-
-.edit-profile-section h3 {
-  color: #92400e;
-  margin-bottom: 1.5rem;
-}
-
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.edit-form label {
-  font-weight: 600;
-  color: #374151;
-  margin-top: 0.5rem;
-}
-
-.edit-form small {
-  color: #6b7280;
-  font-size: 0.75rem;
-  margin-top: -0.5rem;
-}
-
-/* BIO SECTION */
-.bio-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  margin-bottom: 2rem;
-}
-
-.bio-section h3 {
-  color: #111827;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-}
-
-.bio-section p {
-  color: #374151;
-  line-height: 1.6;
-}
-
-/* STATS SECTION */
-.stats-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  background: var(--accent-gradient);
+  color: white;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
 }
 
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+.profile-info {
+  flex: 1;
 }
 
-.stat-icon {
-  font-size: 2.5rem;
-}
-
-.stat-info h2 {
+.profile-name {
   font-size: 2rem;
-  color: #2563eb;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.profile-bio {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+}
+
+.profile-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-profile-btn {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+}
+
+/* STATS GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-md);
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
   margin-bottom: 0.25rem;
 }
 
-.stat-info p {
-  color: #6b7280;
+.stat-label {
   font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
 }
 
-/* MY POSTS SECTION */
-.my-posts-section {
-  margin-top: 3rem;
+/* CONTENT TABS */
+.content-tabs {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 2rem;
 }
 
-.my-posts-section h2 {
-  font-size: 1.5rem;
-  color: #111827;
-  margin-bottom: 1.5rem;
+.tab {
+  padding: 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-light);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: var(--primary);
+}
+
+.tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.tab-panel {
+  min-height: 200px;
 }
 
 .empty-state {
-  background: white;
-  padding: 3rem;
-  border-radius: 12px;
-  border: 2px dashed #d1d5db;
   text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .empty-state p {
-  color: #6b7280;
   margin-bottom: 1.5rem;
   font-size: 1.1rem;
 }
 
-/* POSTS GRID */
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.post-card-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.post-card-profile {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  transition: all 0.3s;
-  height: 100%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.post-card-profile:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-  border-color: #2563eb;
-}
-
-.post-card-profile h3 {
-  font-size: 1.1rem;
-  color: #111827;
-  margin-bottom: 1rem;
-  line-height: 1.4;
-}
-
-.post-meta {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin-bottom: 0.75rem;
-}
-
-.post-tags-profile {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.tag-chip-small {
-  background: #eff6ff;
-  color: #1e40af;
-  padding: 0.25rem 0.6rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .profile-header {
     flex-direction: column;
-    gap: 1.5rem;
     text-align: center;
   }
 
-  .profile-avatar-section {
-    flex-direction: column;
-    text-align: center;
+  .profile-info {
+    width: 100%;
   }
 
-  .stats-section {
-    grid-template-columns: 1fr;
+  .profile-badges {
+    justify-content: center;
   }
 
-  .posts-grid {
+  .stats-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
