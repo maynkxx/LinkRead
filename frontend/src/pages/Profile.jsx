@@ -43,6 +43,8 @@ export default function Profile() {
                 setLoading(false);
             });
 
+        fetchProfile();
+        fetchMyPosts();
     }, [token]);
 
     if (!token) {

@@ -77,6 +77,20 @@ export default function PostDetails() {
 
   const score = (post.upvotes?.length || 0) - (post.downvotes?.length || 0);
 
+  // Decode token to get current user ID
+  const getCurrentUserId = () => {
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const currentUserId = getCurrentUserId();
+  const isAuthor = currentUserId && post.author?._id === currentUserId;
+
   return (
     <div className="container post-wrapper">
 

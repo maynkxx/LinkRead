@@ -28,7 +28,7 @@ const createPost = async (req, res) => {
 const getAllPosts = async (req, res) => {
     try {
         const { search, tag } = req.query;
-        let query = {};
+        let query = { isDraft: false }; // Only show published posts
 
         if (search) {
             query.$text = { $search: search };
@@ -57,6 +57,9 @@ const getPopularPosts = async (req, res) => {
         // We can do this aggregation in DB or fetch and sort in JS. 
         // For Mongoose, aggregation is better for performance.
         const posts = await Post.aggregate([
+            {
+                $match: { isDraft: false } // Only show published posts
+            },
             {
                 $addFields: {
                     upvoteCount: { $size: { $ifNull: ["$upvotes", []] } },
@@ -165,7 +168,52 @@ const deletePost = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Server Error" });
     }
-}
+};
+
+const updatePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (post.author.toString() !== req.user.id) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        // Update fields
+        post.title = req.body.title || post.title;
+        post.content = req.body.content || post.content;
+        post.tips = req.body.tips !== undefined ? req.body.tips : post.tips;
+        post.learnings = req.body.learnings !== undefined ? req.body.learnings : post.learnings;
+        post.codeSnippet = req.body.codeSnippet !== undefined ? req.body.codeSnippet : post.codeSnippet;
+        post.image = req.body.image !== undefined ? req.body.image : post.image;
+        post.tags = req.body.tags || post.tags;
+        post.isDraft = req.body.isDraft !== undefined ? req.body.isDraft : post.isDraft;
+        post.lastSavedAt = Date.now();
+
+        const updatedPost = await post.save();
+        res.json(updatedPost);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+const getUserDrafts = async (req, res) => {
+    try {
+        const drafts = await Post.find({
+            author: req.user.id,
+            isDraft: true
+        })
+            .sort({ lastSavedAt: -1 })
+            .populate('author', 'username profilePic');
+
+        res.json(drafts);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+};
 
 module.exports = {
     createPost,
@@ -174,5 +222,7 @@ module.exports = {
     getPostById,
     upvotePost,
     downvotePost,
-    deletePost
+    deletePost,
+    updatePost,
+    getUserDrafts
 };

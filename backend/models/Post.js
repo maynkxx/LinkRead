@@ -56,6 +56,14 @@ const postSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    isDraft: {
+      type: Boolean,
+      default: false,
+    },
+    lastSavedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );

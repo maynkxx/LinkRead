@@ -50,6 +50,46 @@ export default function Home() {
     fetchPosts();
   };
 
+  const handleDelete = async (postId, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!window.confirm("Are you sure you want to delete this post?")) {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_URL}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (res.ok) {
+      alert("Post deleted successfully!");
+      fetchPosts(); // Refresh the list
+    } else {
+      const data = await res.json();
+      alert(data.message || "Failed to delete post.");
+    }
+  };
+
+  // Decode token to get current user ID
+  const getCurrentUserId = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const currentUserId = getCurrentUserId();
+
   return (
     <div className="home-wrapper">
 
