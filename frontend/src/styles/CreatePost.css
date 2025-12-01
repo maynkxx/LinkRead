@@ -2,37 +2,32 @@
 .create-wrapper {
   display: flex;
   justify-content: center;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+  padding-top: 3rem;
 }
 
 /* CARD */
 .create-card {
   width: 100%;
-  max-width: 900px;
+  max-width: 800px;
   background: white;
-  padding: 3rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-md);
+  padding: 2.5rem;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* HEADER */
-.create-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
+/* TITLE & SUBTITLE */
 .create-title {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  color: var(--text-main);
+  color: #111827;
   margin-bottom: 0.5rem;
 }
 
 .create-sub {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
 }
 
 /* AUTO-SAVE INDICATOR */
@@ -96,66 +91,140 @@
 .create-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
+.create-form label {
   font-weight: 600;
-  color: var(--text-main);
-  font-size: 0.95rem;
+  color: #374151;
 }
 
-.title-input {
-  font-size: 1.2rem;
-  font-weight: 600;
-  padding: 1rem;
-}
-
-/* TEXTAREA */
-.textarea {
-  width: 100%;
-  min-height: 400px;
-  padding: 1.5rem;
-  resize: vertical;
-  border: 1px solid #E2E8F0;
-  border-radius: var(--radius-md);
-  background: #FAFAFA;
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: var(--text-main);
-  font-family: var(--font-sans);
-  transition: all 0.2s ease;
-}
-
-.textarea:focus {
-  outline: none;
-  border-color: var(--primary);
+/* RICH TEXT EDITOR */
+.rich-text-editor {
   background: white;
-  box-shadow: 0 0 0 3px rgba(109, 168, 169, 0.15);
 }
 
-/* BUTTONS */
-.form-actions {
+.rich-text-editor .ql-container {
+  min-height: 300px;
+  font-size: 1rem;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.rich-text-editor .ql-toolbar {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  background: #f9fafb;
+}
+
+.rich-text-editor .ql-editor {
+  min-height: 300px;
+}
+
+.rich-text-editor .ql-editor.ql-blank::before {
+  color: #9ca3af;
+  font-style: normal;
+}
+
+/* BUTTON GROUP */
+.button-group {
   display: flex;
-  justify-content: flex-end;
   gap: 1rem;
   margin-top: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-subtle);
 }
 
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+  flex: 1;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+
+/* BUTTON */
+.create-btn {
+  flex: 1;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+
+/* AI HELPER BUTTONS */
+.btn-ai {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.btn-ai:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-ai:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* AI SUGGESTIONS */
+.ai-suggestions {
+  background: #f0f4ff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  border: 1px solid #c7d2fe;
+}
+
+.ai-suggestions p {
+  margin-bottom: 0.75rem;
+  color: #4338ca;
+}
+
+.suggestion-item {
+  background: white;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e0e7ff;
+}
+
+.suggestion-item:hover {
+  background: #eef2ff;
+  border-color: #818cf8;
+  transform: translateX(4px);
+}
+
+.suggestion-item:last-child {
+  margin-bottom: 0;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .create-card {
     padding: 1.5rem;
   }
 
-  .textarea {
-    min-height: 300px;
+  .button-group {
+    flex-direction: column;
+  }
+
+  .rich-text-editor .ql-container {
+    min-height: 200px;
+  }
+
+  .btn-ai {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
   }
 }

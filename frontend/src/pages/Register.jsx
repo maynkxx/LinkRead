@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API_URL from "../api";
 import "../styles/Register.css";
 
@@ -25,53 +25,42 @@ export default function Register() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="glass-panel auth-card">
-          <div className="auth-content">
-            <h1 className="auth-title">Create Account</h1>
-            <p className="auth-sub">Join our community today.</p>
+    <div className="container register-wrapper">
 
-            <div className="auth-form">
-              <div className="form-group">
-                <label>Username</label>
-                <input
-                  className="input"
-                  placeholder="Enter your username"
-                  onChange={e => setForm({ ...form, username: e.target.value })}
-                />
-              </div>
+      <div className="register-card">
+        <h1 className="register-title">Create an Account</h1>
+        <p className="register-sub">Join the community and start sharing your thoughts.</p>
 
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  className="input"
-                  placeholder="Enter your email"
-                  onChange={e => setForm({ ...form, email: e.target.value })}
-                />
-              </div>
+        <div className="register-form">
 
-              <div className="form-group">
-                <label>Password</label>
-                <input
-                  className="input"
-                  type="password"
-                  placeholder="Create a password"
-                  onChange={e => setForm({ ...form, password: e.target.value })}
-                />
-              </div>
+          <label>Username</label>
+          <input 
+            className="input"
+            placeholder="Enter your username"
+            onChange={e => setForm({ ...form, username: e.target.value })}
+          />
 
-              <button className="btn btn-primary auth-btn" onClick={submit}>
-                Register
-              </button>
+          <label>Email</label>
+          <input 
+            className="input"
+            placeholder="Enter your email"
+            onChange={e => setForm({ ...form, email: e.target.value })}
+          />
 
-              <p className="auth-footer">
-                Already have an account? <Link to="/login">Login</Link>
-              </p>
-            </div>
-          </div>
+          <label>Password</label>
+          <input 
+            className="input"
+            type="password"
+            placeholder="Create a password"
+            onChange={e => setForm({ ...form, password: e.target.value })}
+          />
+
+          <button className="btn btn-primary register-btn" onClick={submit}>
+            Register
+          </button>
         </div>
       </div>
+
     </div>
   );
 }

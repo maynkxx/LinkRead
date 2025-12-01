@@ -35,12 +35,12 @@ export default function Home() {
   const handleSearch = (e) => {
     e.preventDefault();
     fetchPosts(`search=${search}`);
-    setSelectedTag(""); 
+    setSelectedTag(""); // Clear tag when searching
   };
 
   const handleTagClick = (tag) => {
     setSelectedTag(tag);
-    setSearch(""); 
+    setSearch(""); // Clear search when filtering by tag
     fetchPosts(`tag=${tag}`);
   };
 
@@ -91,97 +91,81 @@ export default function Home() {
   const currentUserId = getCurrentUserId();
 
   return (
-    <div className="home-wrapper">
+    <div className="container">
 
-     
-      <section className="hero-section">
-        <div className="container hero-container">
-          <div className="hero-content">
-            <h1 className="hero-title">
-              Discover <span className="text-gradient">Mindful</span> Reading
-            </h1>
-            <p className="hero-sub">
-              A space for thoughtful discussions, learning, and sharing ideas in a calm environment.
-            </p>
-            <div className="hero-actions">
-              <Link to="/create" className="btn btn-primary">Start Writing</Link>
-              <a href="#posts" className="btn btn-secondary">Browse Posts</a>
-            </div>
+      {/* HERO SECTION */}
+      <div className="hero">
+        <h1 className="hero-title">Latest Discussions</h1>
+        <p className="hero-sub">Join the conversation and explore what's trending.</p>
+
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Search posts..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-btn">Search</button>
+        </form>
+
+        {selectedTag && (
+          <div className="active-filter">
+            <span>Filtered by: <strong>{selectedTag}</strong></span>
+            <button onClick={clearFilters} className="clear-btn">Clear</button>
           </div>
-        </div>
-      </section>
-
-      <div className="container home-layout" id="posts">
-
-        <div className="main-feed">
-          <div className="feed-header">
-            <h2>Recent Discussions</h2>
-
-            <form onSubmit={handleSearch} className="search-form">
-              <input
-                type="text"
-                placeholder="Search topics..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="input search-input"
-              />
-            </form>
-          </div>
-
-          {selectedTag && (
-            <div className="active-filter">
-              <span>Filtered by: <span className="badge badge-primary">{selectedTag}</span></span>
-              <button onClick={clearFilters} className="btn-ghost btn-sm">Clear</button>
-            </div>
-          )}
-
-          <div className="posts-grid">
-            {posts.map(post => (
-              <article key={post._id} className="card post-card">
-                <div className="post-header">
-                  <span className="post-author">@{post?.author?.username || 'Anonymous'}</span>
-                  <span className="post-date">{new Date(post.createdAt).toLocaleDateString()}</span>
-                </div>
-
-                <Link to={`/post/${post._id}`} className="post-link">
-                  <h3 className="post-title">{post.title}</h3>
-                  <p className="post-excerpt">
-                    {post.content ? post.content.substring(0, 120) : "No content preview available..."}...
-                  </p>
-                </Link>
-
-                <div className="post-footer">
-                  <div className="post-tags">
-                    {post.tags?.map(tag => (
-                      <span key={tag} className="tag-chip" onClick={() => handleTagClick(tag)}>#{tag}</span>
-                    ))}
-                  </div>
-                  <Link to={`/post/${post._id}`} className="read-more">Read more →</Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <aside className="sidebar">
-          <div className="glass-panel sidebar-panel">
-            <h3>Trending Now </h3>
-            <div className="popular-list">
-              {popularPosts.map(post => (
-                <div key={post._id} className="popular-item">
-                  <Link to={`/post/${post._id}`}>
-                    <h4>{post.title}</h4>
-                  </Link>
-                  <div className="popular-meta">
-                    <span>{post.upvotes?.length || 0} likes</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </aside>
-
+        )}
       </div>
+
+      <div className="home-layout">
+        <div className="main-feed">
+          <h2>Latest Posts</h2>
+          {posts.map(post => (
+            <div key={post._id} className="post-card">
+              <Link to={`/post/${post._id}`}>
+                <h3>{post.title}</h3>
+              </Link>
+              <div className="post-tags">
+                {post.tags?.map(tag => (
+                  <span key={tag} className="tag-chip" onClick={() => handleTagClick(tag)}>#{tag}</span>
+                ))}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p>By {post?.author?.username}</p>
+                {currentUserId && post.author?._id === currentUserId && (
+                  <button
+                    onClick={(e) => handleDelete(post._id, e)}
+                    style={{
+                      background: '#dc2626',
+                      color: 'white',
+                      border: 'none',
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >
+                    🗑️ Delete
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="sidebar">
+          <h2>Popular Posts 🔥</h2>
+          {popularPosts.map(post => (
+            <div key={post._id} className="popular-card">
+              <Link to={`/post/${post._id}`}>
+                <h4>{post.title}</h4>
+              </Link>
+              <p>Score: {(post.upvotes?.length || 0) - (post.downvotes?.length || 0)}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </div>
   );
 }
