@@ -8,17 +8,33 @@ export default function Home() {
   const [popularPosts, setPopularPosts] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchPosts = (query = "") => {
+    setLoading(true);
+    setError(null);
     let url = `${API_URL}/posts`;
     if (query) url += `?${query}`;
 
     fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) setPosts(data);
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch posts");
+        return res.json();
       })
-      .catch(err => console.error("Failed to fetch posts", err));
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPosts(data);
+        } else {
+          setPosts([]);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch posts", err);
+        setError("Failed to load posts. Please check your connection.");
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -35,12 +51,12 @@ export default function Home() {
   const handleSearch = (e) => {
     e.preventDefault();
     fetchPosts(`search=${search}`);
-    setSelectedTag(""); 
+    setSelectedTag("");
   };
 
   const handleTagClick = (tag) => {
     setSelectedTag(tag);
-    setSearch(""); 
+    setSearch("");
     fetchPosts(`tag=${tag}`);
   };
 
@@ -93,7 +109,7 @@ export default function Home() {
   return (
     <div className="home-wrapper">
 
-     
+
       <section className="hero-section">
         <div className="container hero-container">
           <div className="hero-content">
@@ -134,6 +150,10 @@ export default function Home() {
               <button onClick={clearFilters} className="btn-ghost btn-sm">Clear</button>
             </div>
           )}
+
+          {error && <div className="error-message">{error}</div>}
+          {loading && <div className="loading-message">Loading posts...</div>}
+          {!loading && !error && posts.length === 0 && <div className="no-posts">No posts found.</div>}
 
           <div className="posts-grid">
             {posts.map(post => (

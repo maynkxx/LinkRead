@@ -22,20 +22,15 @@ export default function Profile() {
             .then(res => res.json())
             .then(posts => {
                 if (Array.isArray(posts)) {
-                    // Since we don't have the user ID easily, we'll simulate "my posts" 
-                    // by just picking a few random ones or if we had the ID we'd filter:
-                    // const userPosts = posts.filter(p => p.author._id === currentUserId);
-
-                    // For this demo, let's assume the user hasn't posted anything if the list is empty,
-                    // or we can just set it to empty to test the "no posts" message.
-                    // Let's try to actually find posts by "Anonymous" or the default user if possible,
-                    // otherwise default to empty to show the empty state correctly.
-
-                    // Mocking: let's say we found 0 posts to demonstrate the fix
-                    setMyPosts([]);
-
-                    // If you want to see posts, uncomment below:
-                    // setMyPosts(posts.slice(0, 2));
+                    try {
+                        const payload = JSON.parse(atob(token.split('.')[1]));
+                        const userId = payload.id;
+                        const userPosts = posts.filter(p => p.author?._id === userId || p.author === userId);
+                        setMyPosts(userPosts);
+                    } catch (e) {
+                        console.error("Failed to decode token", e);
+                        setMyPosts([]);
+                    }
                 }
                 setLoading(false);
             })

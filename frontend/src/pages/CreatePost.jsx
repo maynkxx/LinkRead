@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 import API_URL, { authHeaders } from "../api";
 import "../styles/CreatePost.css";
 
@@ -11,8 +11,6 @@ export default function CreatePost() {
   const [selectedDraft, setSelectedDraft] = useState(null);
   const [tagInput, setTagInput] = useState("");
   const [autoSaveStatus, setAutoSaveStatus] = useState("");
-  const [aiLoading, setAiLoading] = useState({ titles: false, grammar: false, tags: false });
-  const [titleSuggestions, setTitleSuggestions] = useState([]);
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -42,6 +40,13 @@ export default function CreatePost() {
 
   // Fetch user's drafts on mount
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to create a post.");
+      navigate("/login");
+      return;
+    }
+
     fetchDrafts();
 
     // Load draft if draftId is in URL
@@ -233,93 +238,6 @@ export default function CreatePost() {
   // Alias for submit button
   const submit = publishPost;
 
-  // AI Helper Functions
-  const handleGenerateTitles = async () => {
-    if (!post.content) {
-      alert("Please write some content first!");
-      return;
-    }
-
-    setAiLoading({ ...aiLoading, titles: true });
-    try {
-      const res = await fetch(`${API_URL}/ai/generate-titles`, {
-        method: "POST",
-        headers: authHeaders(),
-        body: JSON.stringify({ content: post.content })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setTitleSuggestions(data.titles);
-      } else {
-        alert(data.message || "AI feature not available. Please add GEMINI_API_KEY to your .env file.");
-      }
-    } catch (error) {
-      alert("Failed to generate titles. AI feature may not be configured.");
-    } finally {
-      setAiLoading({ ...aiLoading, titles: false });
-    }
-  };
-
-  const handleImproveGrammar = async () => {
-    if (!post.content) {
-      alert("Please write some content first!");
-      return;
-    }
-
-    setAiLoading({ ...aiLoading, grammar: true });
-    try {
-      const res = await fetch(`${API_URL}/ai/improve-text`, {
-        method: "POST",
-        headers: authHeaders(),
-        body: JSON.stringify({ text: post.content })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        if (window.confirm("Replace current content with improved version?")) {
-          setPost({ ...post, content: data.improvedText });
-        }
-      } else {
-        alert(data.message || "AI feature not available. Please add GEMINI_API_KEY to your .env file.");
-      }
-    } catch (error) {
-      alert("Failed to improve text. AI feature may not be configured.");
-    } finally {
-      setAiLoading({ ...aiLoading, grammar: false });
-    }
-  };
-
-  const handleSuggestTags = async () => {
-    if (!post.content) {
-      alert("Please write some content first!");
-      return;
-    }
-
-    setAiLoading({ ...aiLoading, tags: true });
-    try {
-      const res = await fetch(`${API_URL}/ai/suggest-tags`, {
-        method: "POST",
-        headers: authHeaders(),
-        body: JSON.stringify({ content: post.content })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setTagInput(data.tags.join(", "));
-      } else {
-        alert(data.message || "AI feature not available. Please add GEMINI_API_KEY to your .env file.");
-      }
-    } catch (error) {
-      alert("Failed to suggest tags. AI feature may not be configured.");
-    } finally {
-      setAiLoading({ ...aiLoading, tags: false });
-    }
-  };
-
   return (
     <div className="container create-wrapper">
       <div className="card create-card">
@@ -361,23 +279,6 @@ export default function CreatePost() {
               value={post.title}
               onChange={e => setPost({ ...post, title: e.target.value })}
             />
-            <button
-              className="btn btn-sm btn-outline ai-btn"
-              onClick={handleGenerateTitles}
-              disabled={aiLoading.titles}
-            >
-              {aiLoading.titles ? "Generating..." : "✨ Generate Titles (AI)"}
-            </button>
-            {titleSuggestions.length > 0 && (
-              <div className="ai-suggestions">
-                <p>Suggestions:</p>
-                <ul>
-                  {titleSuggestions.map((t, i) => (
-                    <li key={i} onClick={() => setPost({ ...post, title: t })}>{t}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </div>
 
           <div className="form-group">
@@ -388,13 +289,6 @@ export default function CreatePost() {
               value={tagInput}
               onChange={e => setTagInput(e.target.value)}
             />
-            <button
-              className="btn btn-sm btn-outline ai-btn"
-              onClick={handleSuggestTags}
-              disabled={aiLoading.tags}
-            >
-              {aiLoading.tags ? "Suggesting..." : "✨ Suggest Tags (AI)"}
-            </button>
           </div>
 
           <div className="form-group">
@@ -407,13 +301,6 @@ export default function CreatePost() {
               formats={formats}
               className="content-editor"
             />
-            <button
-              className="btn btn-sm btn-outline ai-btn"
-              onClick={handleImproveGrammar}
-              disabled={aiLoading.grammar}
-            >
-              {aiLoading.grammar ? "Improving..." : "✨ Improve Grammar (AI)"}
-            </button>
           </div>
 
           <div className="form-actions">

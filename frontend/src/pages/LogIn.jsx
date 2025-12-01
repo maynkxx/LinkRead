@@ -6,22 +6,28 @@ import "../styles/Login.css";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const submit = async () => {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
+    setError("");
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      navigate("/");
-    } else {
-      alert(data.message);
+      if (res.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        navigate("/");
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
     }
   };
 
@@ -32,6 +38,8 @@ export default function Login() {
           <div className="auth-content">
             <h1 className="auth-title">Welcome Back</h1>
             <p className="auth-sub">Login to continue your journey.</p>
+
+            {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
 
             <div className="auth-form">
               <div className="form-group">
