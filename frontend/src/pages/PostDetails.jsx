@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import API_URL, { authHeaders, getToken } from "../api";
 import "../styles/PostDetails.css";
 
@@ -16,6 +16,8 @@ export default function PostDetails() {
   }, [id]);
 
   const submitComment = async () => {
+    if (!comment.trim()) return;
+
     const res = await fetch(`${API_URL}/comments`, {
       method: "POST",
       headers: authHeaders(),
@@ -44,7 +46,6 @@ export default function PostDetails() {
     });
 
     if (res.ok) {
-      // Refresh post data to show updated votes
       const updatedPost = await fetch(`${API_URL}/posts/${id}`).then(res => res.json());
       setPost(updatedPost);
     }
@@ -66,86 +67,104 @@ export default function PostDetails() {
     });
 
     if (res.ok) {
-      alert("Report submitted successfully. Thank you for helping keep our community safe.");
+      alert("Report submitted successfully.");
     } else {
       alert("Failed to submit report.");
     }
   };
 
-  if (!post) return <div className="container"><p>Loading...</p></div>;
+  if (!post) return <div className="container loading"><p>Loading article...</p></div>;
 
   const score = (post.upvotes?.length || 0) - (post.downvotes?.length || 0);
 
   return (
     <div className="container post-wrapper">
 
-      {/* POST DETAILS CARD */}
-      <div className="post-details-card">
-        <h1 className="post-title">{post.title}</h1>
-        <p className="post-author">By {post?.author?.username}</p>
-        <p className="post-content">{post.content}</p>
-
-        {/* VOTING SECTION */}
-        <div className="vote-section">
-          <div className="vote-buttons">
-            <button onClick={() => handleVote("upvote")} className="vote-btn">Upvote</button>
-            <span className="vote-score">{score}</span>
-            <button onClick={() => handleVote("downvote")} className="vote-btn">Downvote</button>
+      {/* ARTICLE CARD */}
+      <article className="card post-details-card">
+        <header className="article-header">
+          <div className="article-meta">
+            <span className="badge badge-primary">{post.tags?.[0] || 'General'}</span>
+            <span className="article-date">{new Date(post.createdAt).toLocaleDateString()}</span>
           </div>
 
-          {token && (
-            <button
-              className="report-btn"
-              onClick={() => handleReport(post._id, "Post")}
-            >
-              🚩 Report Post
-            </button>
-          )}
+          <h1 className="article-title">{post.title}</h1>
+
+          <div className="article-author">
+            <div className="author-avatar">
+              {post?.author?.username?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div className="author-info">
+              <span className="author-name">{post?.author?.username}</span>
+              <span className="author-role">Author</span>
+            </div>
+          </div>
+        </header>
+
+        <div className="article-content">
+          {post.content}
         </div>
-      </div>
 
-      {/* COMMENT INPUT */}
-      {token ? (
-        <div className="comment-card">
-          <h2>Add a Comment</h2>
+        <div className="article-footer">
+          <div className="vote-section">
+            <div className="vote-controls">
+              <button onClick={() => handleVote("upvote")} className="vote-btn upvote" title="Upvote">
+                ▲
+              </button>
+              <span className="vote-score">{score}</span>
+              <button onClick={() => handleVote("downvote")} className="vote-btn downvote" title="Downvote">
+                ▼
+              </button>
+            </div>
 
-          <textarea
-            className="textarea"
-            placeholder="Write a comment..."
-            value={comment}
-            onChange={e => setComment(e.target.value)}
-          />
-
-          <button className="btn btn-primary comment-btn" onClick={submitComment}>
-            Comment
-          </button>
+            {token && (
+              <button className="btn-ghost btn-sm report-btn" onClick={() => handleReport(post._id, "Post")}>
+                🚩 Report
+              </button>
+            )}
+          </div>
         </div>
-      ) : (
-        <div className="login-prompt">
-          <p>Please <a href="/login">login</a> to comment or vote.</p>
-        </div>
-      )}
+      </article>
 
-      {/* COMMENT LIST */}
-      <div className="comments-section">
-        <h2>Comments</h2>
+      {/* COMMENTS SECTION */}
+      <div className="comments-wrapper">
+        <h3 className="comments-title">Discussion ({post.comments?.length || 0})</h3>
 
-        {(post.comments || []).map(c => (
-          <div key={c._id} className="comment-item">
-            <div className="comment-header">
-              <p className="comment-author">{c.author.username}</p>
+        {token ? (
+          <div className="comment-form glass-panel">
+            <textarea
+              className="textarea comment-input"
+              placeholder="What are your thoughts?"
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+            />
+            <div className="comment-actions">
+              <button className="btn btn-primary" onClick={submitComment}>Post Comment</button>
+            </div>
+          </div>
+        ) : (
+          <div className="login-prompt glass-panel">
+            <p>Please <Link to="/login">login</Link> to join the discussion.</p>
+          </div>
+        )}
+
+        <div className="comments-list">
+          {(post.comments || []).map(c => (
+            <div key={c._id} className="comment-item card">
+              <div className="comment-header">
+                <span className="comment-author">{c.author.username}</span>
+                <span className="comment-date">{new Date(c.createdAt).toLocaleDateString()}</span>
+              </div>
+              <p className="comment-text">{c.content}</p>
+
               {token && (
-                <button
-                  className="report-link"
-                  onClick={() => handleReport(c._id, "Comment")}
-                >
+                <button className="comment-report" onClick={() => handleReport(c._id, "Comment")}>
                   Report
                 </button>
               )}
             </div>
-            <p className="comment-text">{c.content}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
     </div>
