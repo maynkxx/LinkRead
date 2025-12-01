@@ -1,51 +1,201 @@
-/* NAVBAR CONTAINER */
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0.75rem 0;
+  z-index: 1000;
+  padding: 1rem 0;
+  transition: all 0.3s ease;
 }
 
 .navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
-/* LOGO */
+/* Scrolled State - Glass Effect */
+.navbar.scrolled,
+.navbar.solid {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  padding: 0.75rem 0;
+}
+
+.navbar.transparent {
+  background: transparent;
+  border-bottom: none;
+  box-shadow: none;
+}
+
+/* Logo */
 .navbar-logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #111827;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  text-decoration: none;
+  letter-spacing: -0.03em;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  z-index: 1001;
 }
 
-/* LINKS */
+/* Links Container */
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
-.navbar-links a {
-  font-size: 1rem;
+/* Nav Links */
+.nav-link {
+  text-decoration: none;
+  color: var(--text-secondary);
   font-weight: 500;
-  color: #4b5563;
-  transition: color 0.2s ease;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 0.5rem 0;
 }
 
-.navbar-links a:hover {
-  color: #111827;
+.nav-link:hover {
+  color: var(--primary);
 }
 
-/* LOGOUT BUTTON */
-.navbar-logout {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #4b5563;
+.nav-link.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Active Indicator (Underline) */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* CTA Button */
+.nav-cta {
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 10px rgba(109, 168, 169, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(109, 168, 169, 0.3);
+  color: white !important;
+  /* Ensure text stays white */
+}
+
+/* Logout Button Reset */
+.logout-btn {
   background: none;
-  transition: color 0.2s ease;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
-.navbar-logout:hover {
-  color: #111827;
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  padding: 0.5rem;
+}
+
+.hamburger {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-main);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: var(--text-main);
+  transition: all 0.3s ease;
+}
+
+.hamburger::before {
+  top: -8px;
+}
+
+.hamburger::after {
+  top: 8px;
+}
+
+.hamburger.open {
+  background: transparent;
+}
+
+.hamburger.open::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.hamburger.open::after {
+  transform: rotate(-45deg);
+  top: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .navbar-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: white;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+  }
+
+  .navbar-links.mobile-open {
+    right: 0;
+  }
+
+  .nav-link {
+    font-size: 1.2rem;
+    width: 100%;
+    text-align: center;
+  }
 }
