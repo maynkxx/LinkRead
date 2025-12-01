@@ -7,7 +7,15 @@ import "../styles/CreatePost.css";
 
 export default function CreatePost() {
   const [post, setPost] = useState({ title: "", content: "", tags: [] });
+  const [drafts, setDrafts] = useState([]);
+  const [selectedDraft, setSelectedDraft] = useState(null);
+  const [tagInput, setTagInput] = useState("");
+  const [autoSaveStatus, setAutoSaveStatus] = useState("");
+  const [aiLoading, setAiLoading] = useState({ titles: false, grammar: false, tags: false });
+  const [titleSuggestions, setTitleSuggestions] = useState([]);
+
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const autoSaveTimer = useRef(null);
 
   // Rich text editor modules configuration
@@ -80,7 +88,9 @@ export default function CreatePost() {
 
   const loadDraft = async (draftId) => {
     try {
-      const res = await fetch(`${API_URL}/posts/${draftId}`);
+      const res = await fetch(`${API_URL}/posts/${draftId}`, {
+        headers: authHeaders()
+      });
       if (res.ok) {
         const data = await res.json();
         setPost({
@@ -220,6 +230,9 @@ export default function CreatePost() {
     }
   };
 
+  // Alias for submit button
+  const submit = publishPost;
+
   // AI Helper Functions
   const handleGenerateTitles = async () => {
     if (!post.content) {
@@ -240,7 +253,7 @@ export default function CreatePost() {
       if (res.ok) {
         setTitleSuggestions(data.titles);
       } else {
-        alert(data.message || "AI feature not available. Please add OPENAI_API_KEY to your .env file.");
+        alert(data.message || "AI feature not available. Please add GEMINI_API_KEY to your .env file.");
       }
     } catch (error) {
       alert("Failed to generate titles. AI feature may not be configured.");
@@ -270,7 +283,7 @@ export default function CreatePost() {
           setPost({ ...post, content: data.improvedText });
         }
       } else {
-        alert(data.message || "AI feature not available. Please add OPENAI_API_KEY to your .env file.");
+        alert(data.message || "AI feature not available. Please add GEMINI_API_KEY to your .env file.");
       }
     } catch (error) {
       alert("Failed to improve text. AI feature may not be configured.");
@@ -298,7 +311,7 @@ export default function CreatePost() {
       if (res.ok) {
         setTagInput(data.tags.join(", "));
       } else {
-        alert(data.message || "AI feature not available. Please add OPENAI_API_KEY to your .env file.");
+        alert(data.message || "AI feature not available. Please add GEMINI_API_KEY to your .env file.");
       }
     } catch (error) {
       alert("Failed to suggest tags. AI feature may not be configured.");
@@ -345,8 +358,26 @@ export default function CreatePost() {
             <input
               className="input title-input"
               placeholder="Enter an engaging title..."
+              value={post.title}
               onChange={e => setPost({ ...post, title: e.target.value })}
             />
+            <button
+              className="btn btn-sm btn-outline ai-btn"
+              onClick={handleGenerateTitles}
+              disabled={aiLoading.titles}
+            >
+              {aiLoading.titles ? "Generating..." : "✨ Generate Titles (AI)"}
+            </button>
+            {titleSuggestions.length > 0 && (
+              <div className="ai-suggestions">
+                <p>Suggestions:</p>
+                <ul>
+                  {titleSuggestions.map((t, i) => (
+                    <li key={i} onClick={() => setPost({ ...post, title: t })}>{t}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -354,21 +385,40 @@ export default function CreatePost() {
             <input
               className="input"
               placeholder="e.g. React, Productivity, Life (comma separated)"
-              onChange={e => setPost({ ...post, tags: e.target.value.split(",").map(t => t.trim()) })}
+              value={tagInput}
+              onChange={e => setTagInput(e.target.value)}
             />
+            <button
+              className="btn btn-sm btn-outline ai-btn"
+              onClick={handleSuggestTags}
+              disabled={aiLoading.tags}
+            >
+              {aiLoading.tags ? "Suggesting..." : "✨ Suggest Tags (AI)"}
+            </button>
           </div>
 
           <div className="form-group">
             <label>Content</label>
-            <textarea
-              className="textarea content-input"
-              placeholder="Write your story here..."
-              onChange={e => setPost({ ...post, content: e.target.value })}
-            ></textarea>
+            <ReactQuill
+              theme="snow"
+              value={post.content}
+              onChange={(content) => setPost({ ...post, content })}
+              modules={modules}
+              formats={formats}
+              className="content-editor"
+            />
+            <button
+              className="btn btn-sm btn-outline ai-btn"
+              onClick={handleImproveGrammar}
+              disabled={aiLoading.grammar}
+            >
+              {aiLoading.grammar ? "Improving..." : "✨ Improve Grammar (AI)"}
+            </button>
           </div>
 
           <div className="form-actions">
             <button className="btn btn-secondary" onClick={() => navigate(-1)}>Cancel</button>
+            <button className="btn btn-outline" onClick={saveDraft}>Save Draft</button>
             <button className="btn btn-primary" onClick={submit}>Publish Post</button>
           </div>
         </div>

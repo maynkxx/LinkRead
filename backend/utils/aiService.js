@@ -1,36 +1,28 @@
-const OpenAI = require('openai');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Initialize OpenAI client
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-}) : null;
+// Initialize Gemini client
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+
+const getModel = () => {
+    if (!genAI) {
+        throw new Error('Gemini API key not configured');
+    }
+    return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+};
 
 /**
  * Generate title suggestions based on blog content
  */
 const generateTitleSuggestions = async (content) => {
-    if (!openai) {
-        throw new Error('OpenAI API key not configured');
-    }
-
     try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a creative blog title generator. Generate catchy, engaging blog titles.'
-                },
-                {
-                    role: 'user',
-                    content: `Generate 5 catchy, engaging blog post titles for the following content. Return only the titles, one per line, without numbering:\n\n${content.substring(0, 500)}`
-                }
-            ],
-            max_tokens: 200,
-            temperature: 0.8
-        });
+        const model = getModel();
+        const prompt = `You are a creative blog title generator. Generate 5 catchy, engaging blog post titles for the following content. Return only the titles, one per line, without numbering:\n\n${content.substring(0, 500)}`;
 
-        const titles = response.choices[0].message.content
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        const titles = text
             .trim()
             .split('\n')
             .filter(title => title.trim())
@@ -38,7 +30,7 @@ const generateTitleSuggestions = async (content) => {
 
         return titles;
     } catch (error) {
-        console.error('OpenAI API Error:', error);
+        console.error('Gemini API Error:', error);
         throw new Error('Failed to generate title suggestions');
     }
 };
@@ -47,30 +39,15 @@ const generateTitleSuggestions = async (content) => {
  * Improve grammar and tone of text
  */
 const improveGrammar = async (text) => {
-    if (!openai) {
-        throw new Error('OpenAI API key not configured');
-    }
-
     try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a professional editor. Improve the grammar, clarity, and tone of the text while maintaining the original meaning and voice.'
-                },
-                {
-                    role: 'user',
-                    content: `Improve the following text:\n\n${text}`
-                }
-            ],
-            max_tokens: 1000,
-            temperature: 0.3
-        });
+        const model = getModel();
+        const prompt = `You are a professional editor. Improve the grammar, clarity, and tone of the following text while maintaining the original meaning and voice. Return only the improved text:\n\n${text}`;
 
-        return response.choices[0].message.content.trim();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        return response.text().trim();
     } catch (error) {
-        console.error('OpenAI API Error:', error);
+        console.error('Gemini API Error:', error);
         throw new Error('Failed to improve text');
     }
 };
@@ -79,28 +56,15 @@ const improveGrammar = async (text) => {
  * Suggest relevant tags based on content
  */
 const suggestTags = async (content) => {
-    if (!openai) {
-        throw new Error('OpenAI API key not configured');
-    }
-
     try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a content categorization expert. Generate relevant, concise tags for blog posts.'
-                },
-                {
-                    role: 'user',
-                    content: `Generate 5-7 relevant tags for the following blog content. Return only the tags, comma-separated, without any additional text:\n\n${content.substring(0, 500)}`
-                }
-            ],
-            max_tokens: 100,
-            temperature: 0.5
-        });
+        const model = getModel();
+        const prompt = `You are a content categorization expert. Generate 5-7 relevant tags for the following blog content. Return only the tags, comma-separated, without any additional text:\n\n${content.substring(0, 500)}`;
 
-        const tags = response.choices[0].message.content
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        const tags = text
             .trim()
             .split(',')
             .map(tag => tag.trim())
@@ -109,7 +73,7 @@ const suggestTags = async (content) => {
 
         return tags;
     } catch (error) {
-        console.error('OpenAI API Error:', error);
+        console.error('Gemini API Error:', error);
         throw new Error('Failed to suggest tags');
     }
 };
