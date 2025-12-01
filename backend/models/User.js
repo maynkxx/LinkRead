@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please add a password"],
+    select: false
   },
   googleId: {
     type: String,
@@ -22,6 +23,11 @@ const userSchema = new mongoose.Schema({
   profilePic: {
     type: String,
     default: ""
+  },
+  bio: {
+    type: String,
+    default: "",
+    maxlength: 500
   },
   streak: {
     currentStreak: { type: Number, default: 0 },
